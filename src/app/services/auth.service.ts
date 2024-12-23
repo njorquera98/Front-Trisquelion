@@ -24,7 +24,14 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('authToken');
+    // Elimina el token JWT del almacenamiento local o de sesión
+    localStorage.removeItem('authToken');  // Si lo almacenas en localStorage
+    sessionStorage.removeItem('authToken');  // Si lo almacenas en sessionStorage
+  }
+
+  // Agrega la lógica para verificar si el usuario está autenticado
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('authToken') || !!sessionStorage.getItem('authToken');
   }
 }
 
