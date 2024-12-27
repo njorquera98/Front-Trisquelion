@@ -1,0 +1,53 @@
+<div class="container mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+
+
+  <app-tabs (onTabSeleccionada)="cambiarVista($event)" [pacienteId]="pacienteId"></app-tabs>
+
+  <!-- Contenedor principal con dos columnas responsivas -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Columna izquierda: Información del paciente y evaluación -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-4">Información del Paciente</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <h3 class="font-semibold text-gray-700 dark:text-gray-300">Nombre</h3>
+          <p class="text-gray-900 dark:text-white">{{ paciente?.nombre }} {{ paciente?.apellido }}</p>
+        </div>
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <h3 class="font-semibold text-gray-700 dark:text-gray-300">Teléfono</h3>
+          <p class="text-gray-900 dark:text-white">{{ paciente?.telefono }}</p>
+        </div>
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <h3 class="font-semibold text-gray-700 dark:text-gray-300">Correo</h3>
+          <p class="text-gray-900 dark:text-white">{{ paciente?.correo }}</p>
+        </div>
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <h3 class="font-semibold text-gray-700 dark:text-gray-300">Fecha de Nacimiento</h3>
+          <p class="text-gray-900 dark:text-white">{{ paciente?.fecha_nacimiento | date }}</p>
+        </div>
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <h3 class="font-semibold text-gray-700 dark:text-gray-300">Previsión</h3>
+          <p class="text-gray-900 dark:text-white">{{ paciente?.prevision }}</p>
+        </div>
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <h3 class="font-semibold text-gray-700 dark:text-gray-300">Estado</h3>
+          <div class="flex items-center space-x-4"> <!-- Aumentando el espacio con space-x-4 -->
+            <p class="text-gray-900 dark:text-white">{{ paciente?.activo ? 'Activo' : 'Inactivo' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <app-evaluacion *ngIf="vistaSeleccionada === 'sesiones'"></app-evaluacion>
+        <app-patologias *ngIf="vistaSeleccionada === 'consultas'"></app-patologias>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Sesiones del paciente -->
+    <div class="contenido-dinamico">
+      <app-sesiones *ngIf="vistaSeleccionada === 'sesiones'" [pacienteId]="pacienteId"></app-sesiones>
+      <app-consultas-medicas *ngIf="vistaSeleccionada === 'consultas'"
+        [pacienteId]="pacienteId"></app-consultas-medicas>
+    </div>
+  </div>
+</div>
