@@ -1,17 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Paciente } from '../models/paciente.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PacienteService {
-  private apiUrl = 'http://localhost:3000/pacientes'; // Cambia esto con la URL de tu backend
+  private baseUrl = 'http://localhost:3000/pacientes'; // Cambia esto con la URL de tu backend
 
   constructor(private http: HttpClient) { }
 
-  getPacientes(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl); // Asegúrate de que la respuesta sea un arreglo de pacientes
+  // Obtener pacientes activos
+  getPacientesActivos(): Observable<Paciente[]> {
+    return this.http.get<Paciente[]>(`${this.baseUrl}/activos`);
+  }
+
+  // Obtener pacientes inactivos
+  getPacientesInactivos(): Observable<Paciente[]> {
+    return this.http.get<Paciente[]>(`${this.baseUrl}/inactivos`);
+  }
+
+  getPaciente(pacienteId: number): Observable<Paciente> {
+    return this.http.get<Paciente>(`${this.baseUrl}/${pacienteId}`);
   }
 }
 
