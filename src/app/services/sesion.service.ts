@@ -15,5 +15,12 @@ export class SesionService {
     return this.http.get<Sesion[]>(`${this.baseUrl}/paciente/${pacienteId}`);
   }
 
+  getNextNSesion(pacienteId: string): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/next-n-sesion/${pacienteId}`);
+  }
+
+  createSesion(pacienteId: number, sesionData: Sesion): Observable<Sesion> {
+    return this.http.post<Sesion>(`${this.baseUrl}/${pacienteId}`, sesionData);
+  }
 }
 

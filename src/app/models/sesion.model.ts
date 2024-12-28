@@ -1,6 +1,6 @@
 export interface Sesion {
-  sesion_id: number;
-  n_de_sesion: string;
+  sesion_id?: number;
+  n_de_sesion?: number;
   fecha: Date;
   hora: string;
   descripcion: string;

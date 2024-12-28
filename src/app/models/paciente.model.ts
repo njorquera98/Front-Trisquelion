@@ -4,6 +4,7 @@ export interface Paciente {
   apellido: string;
   telefono: string;
   correo: string;
+  domicilio: string;
   fecha_nacimiento: Date;
   prevision: string;
   activo: boolean;
