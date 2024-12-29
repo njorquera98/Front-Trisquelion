@@ -14,7 +14,7 @@ import { CrearSesionComponent } from '../crear-sesion/crear-sesion.component';
 
 export class SesionesComponent implements OnInit {
   @Input() pacienteId!: number;
-  sesiones: Sesion[] = [];
+  sesiones: any[] = [];
   mostrarModal = false;
 
   constructor(
@@ -31,30 +31,27 @@ export class SesionesComponent implements OnInit {
   }
 
   cargarSesiones(pacienteId: number): void {
-    this.sesionService.obtenerSesionesPorPaciente(pacienteId).subscribe(
+    this.sesionService.getSesionesConFolio(pacienteId).subscribe(
       (sesiones) => {
-        // Invertir el array de sesiones
-        this.sesiones = sesiones.reverse();
+        this.sesiones = sesiones.reverse(); // Opcional: invertir el array para mostrar las últimas sesiones primero
       },
       (error) => {
         console.error('Error al cargar las sesiones:', error);
       }
     );
   }
-  // Método para abrir el modal
+
   abrirModal() {
     this.mostrarModal = true;
   }
 
-  // Método para cerrar el modal
   cerrarModal() {
     this.mostrarModal = false;
   }
 
-  // Método para manejar el cierre del modal cuando la sesión se guarda
   manejarSesionCreada() {
-    this.cerrarModal(); // Cerrar el modal
-    this.cargarSesiones(this.pacienteId); // Recargar las sesiones si es necesario
+    this.cerrarModal();
+    this.cargarSesiones(this.pacienteId);
   }
 }
 

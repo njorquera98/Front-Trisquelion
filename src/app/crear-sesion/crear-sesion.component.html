@@ -14,14 +14,15 @@
         <option value="alta">Alta</option>
       </select>
     </div>
-    <!--
     <div>
       <label for="n_folio" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">N° de Folio</label>
-      <input type="text" id="n_folio" name="" [(ngModel)]="n_folio"
+      <select id="bono_fk" name="bono_fk" [(ngModel)]="selectedBonoId"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-        placeholder="Ingrese número de folio" required>
+        required>
+        <option value="" disabled selected>Seleccione un folio</option>
+        <option *ngFor="let bono of folios" [value]="bono.bono_id">{{ bono.folio }}</option>
+      </select>
     </div>
--->
     <div>
       <label for="fecha" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha</label>
       <input type="date" id="fecha" name="fecha" [(ngModel)]="fecha"

@@ -11,16 +11,16 @@ export class SesionService {
 
   constructor(private http: HttpClient) { }
 
-  obtenerSesionesPorPaciente(pacienteId: number): Observable<Sesion[]> {
-    return this.http.get<Sesion[]>(`${this.baseUrl}/paciente/${pacienteId}`);
+  getSesionesConFolio(pacienteId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/paciente/${pacienteId}`);
   }
 
-  getNextNSesion(pacienteId: string): Observable<number> {
-    return this.http.get<number>(`${this.baseUrl}/next-n-sesion/${pacienteId}`);
+  getLastSesion(pacienteId: number): Observable<Sesion> {
+    return this.http.get<Sesion>(`${this.baseUrl}/last/${pacienteId}`);
   }
 
-  createSesion(pacienteId: number, sesionData: Sesion): Observable<Sesion> {
-    return this.http.post<Sesion>(`${this.baseUrl}/${pacienteId}`, sesionData);
+  createSesion(sesionData: Sesion): Observable<Sesion> {
+    return this.http.post<Sesion>(`${this.baseUrl}`, sesionData);
   }
 }
 
