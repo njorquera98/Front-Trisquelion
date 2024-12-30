@@ -8,11 +8,12 @@ import { SesionesComponent } from '../sesiones/sesiones.component';
 import { ConsultasMedicasComponent } from '../consultas-medicas/consultas-medicas.component';
 import { EvaluacionComponent } from '../evaluacion/evaluacion.component';
 import { PatologiasComponent } from '../patologias/patologias.component';
+import { BonosComponent } from '../bonos/bonos.component';
 
 @Component({
   selector: 'app-paciente',
   standalone: true,
-  imports: [CommonModule, TabsComponent, SesionesComponent, ConsultasMedicasComponent, EvaluacionComponent, PatologiasComponent], // Importa tus componentes aquí
+  imports: [CommonModule, TabsComponent, SesionesComponent, ConsultasMedicasComponent, EvaluacionComponent, PatologiasComponent, BonosComponent], // Importa tus componentes aquí
   templateUrl: './paciente.component.html',
   styleUrls: ['./paciente.component.css']
 })
@@ -50,6 +51,24 @@ export class PacienteComponent implements OnInit {
   // Cambiar la vista según el evento emitido por el componente Tabs
   cambiarVista(vista: string): void {
     this.vistaSeleccionada = vista;
+  }
+
+  mostrarModalBono = false; // Variable para controlar la visibilidad del modal
+
+  // Método para abrir el modal de crear bono
+  abrirModalBono() {
+    this.mostrarModalBono = true;
+  }
+
+  // Método para cerrar el modal de crear bono
+  cerrarModalBono() {
+    this.mostrarModalBono = false;
+  }
+
+  // Método para manejar la creación del bono
+  manejarBonoCreado() {
+    this.cerrarModalBono(); // Cerrar el modal
+    // Puedes llamar a un método para actualizar la lista de bonos si es necesario
   }
 }
 

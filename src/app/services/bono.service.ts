@@ -14,5 +14,9 @@ export class BonoService {
   getFoliosByPaciente(pacienteId: number): Observable<Bono[]> {
     return this.http.get<Bono[]>(`${this.apiUrl}/paciente/${pacienteId}`);
   }
+
+  createBono(bonoData: Bono): Observable<Bono> {
+    return this.http.post<Bono>(this.apiUrl, bonoData);
+  }
 }
 
