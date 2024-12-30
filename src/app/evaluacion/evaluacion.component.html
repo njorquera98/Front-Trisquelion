@@ -1,24 +1,43 @@
-<h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-4">Evaluación del Paciente</h2>
-<div class="space-y-6">
-  <!-- Evaluación -->
-  <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-    <h3 class="font-semibold text-gray-700 dark:text-gray-300">Fecha de Ingreso</h3>
-    <p class="text-gray-900 dark:text-white">15 de diciembre de 2024</p>
-  </div>
-  <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-    <h3 class="font-semibold text-gray-700 dark:text-gray-300">Objetivo</h3>
-    <p class="text-gray-900 dark:text-white">Mejorar la movilidad de la pierna derecha, fortalecer los músculos
-      de la pierna para prevenir caídas y mejorar la postura.</p>
-  </div>
-  <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-    <h3 class="font-semibold text-gray-700 dark:text-gray-300">Diagnóstico</h3>
-    <p class="text-gray-900 dark:text-white">Lesión muscular en la pierna derecha con limitación de movimiento y
-      dolor ocasional durante las actividades físicas.</p>
-  </div>
-  <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-    <h3 class="font-semibold text-gray-700 dark:text-gray-300">Anamnesis</h3>
-    <p class="text-gray-900 dark:text-white">Paciente refiere dolor en la pierna derecha desde hace
-      aproximadamente 2 meses. No ha recibido tratamiento físico previo. Historial médico negativo en cuanto a
-      fracturas o cirugías.</p>
+<h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-4">Última Evaluación del Paciente</h2>
+
+<!-- Mostrar la última evaluación si existe -->
+<div *ngIf="evaluacion; else noEvaluacion">
+  <div class="overflow-y-auto h-[calc(100vh-8rem)]">
+    <div class="space-y-4">
+      <!-- Fecha de Ingreso -->
+      <div
+        class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
+        <p class="font-semibold text-gray-700 dark:text-gray-300">Fecha de Ingreso</p>
+        <p class="text-gray-900 dark:text-white">{{ evaluacion.fechaIngreso | date }}</p>
+      </div>
+
+      <!-- Objetivo -->
+      <div
+        class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
+        <p class="font-semibold text-gray-700 dark:text-gray-300">Objetivo</p>
+        <p class="text-gray-900 dark:text-white">{{ evaluacion.objetivo }}</p>
+      </div>
+
+      <!-- Diagnóstico -->
+      <div
+        class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
+        <p class="font-semibold text-gray-700 dark:text-gray-300">Diagnóstico</p>
+        <p class="text-gray-900 dark:text-white">{{ evaluacion.diagnostico }}</p>
+      </div>
+
+      <!-- Anamnesis -->
+      <div
+        class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
+        <p class="font-semibold text-gray-700 dark:text-gray-300">Anamnesis</p>
+        <p class="text-gray-900 dark:text-white">{{ evaluacion.anamnesis }}</p>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Mostrar mensaje si no hay evaluaciones -->
+<ng-template #noEvaluacion>
+  <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+    <p class="text-gray-900 dark:text-white">No hay evaluaciones disponibles para este paciente.</p>
+  </div>
+</ng-template>

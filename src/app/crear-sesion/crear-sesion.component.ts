@@ -16,42 +16,40 @@ import { BonoService } from '../services/bono.service';
 export class CrearSesionComponent implements OnInit {
   pacienteId: number = 0;
   tipo_sesion: string = '';
-  n_folio: string = '';  // Este es solo un valor temporal para el formulario
+  n_folio: string = '';
   fecha: string = '';
   hora: string = '';
   descripcion: string = '';
-  folios: Bono[] = [];
-  ultimoNumeroSesion: number = 0;  // Para guardar el último número de sesión
-  selectedBonoId: number = 0;  // Para guardar el bono seleccionado
+  folios: any[] = [];
+  ultimoNumeroSesion: number = 0;
+  selectedBonoId: number = 0;
+  errorMessage: string = ''; // Para mostrar el mensaje de error
+  showErrorAlert: boolean = false; // Para controlar la visibilidad de la alerta
 
-  @Output() sesionCreada: EventEmitter<void> = new EventEmitter<void>(); // Evento para notificar que la sesión se guardó
+  @Output() sesionCreada: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
     private sesionService: SesionService,
     private bonoService: BonoService,
     private route: ActivatedRoute
   ) {
-    // Obtener el pacienteId desde la URL
     this.route.params.subscribe(params => {
       this.pacienteId = +params['id'];
     });
   }
 
   ngOnInit(): void {
-    // Obtener el pacienteId desde la URL
     this.route.params.subscribe(params => {
       this.pacienteId = +params['id'];
-      // Obtener los folios de los bonos del paciente
       this.getFolios();
-      // Obtener la última sesión
       this.getLastSesion();
     });
   }
 
   getFolios(): void {
     this.bonoService.getFoliosByPaciente(this.pacienteId).subscribe(
-      (data: Bono[]) => {
-        this.folios = data; // Almacenar los folios en el array
+      (data: any[]) => {
+        this.folios = data;
       },
       (error) => {
         console.error('Error al obtener los folios:', error);
@@ -59,14 +57,13 @@ export class CrearSesionComponent implements OnInit {
     );
   }
 
-  // Obtener la última sesión y calcular el número de sesión
   getLastSesion(): void {
     this.sesionService.getLastSesion(this.pacienteId).subscribe(
       (data: Sesion) => {
         if (data && data.n_de_sesion) {
-          this.ultimoNumeroSesion = data.n_de_sesion + 1;  // Incrementar en 1 para la siguiente sesión
+          this.ultimoNumeroSesion = data.n_de_sesion + 1;
         } else {
-          this.ultimoNumeroSesion = 1;  // Si no hay sesiones anteriores, iniciar con 1
+          this.ultimoNumeroSesion = 1;
         }
       },
       (error) => {
@@ -75,27 +72,40 @@ export class CrearSesionComponent implements OnInit {
     );
   }
 
-  // Método para manejar el envío del formulario
   onSubmit(): void {
+    // Obtener el bono seleccionado
+    const selectedBono = this.folios.find(bono => bono.bono_id === this.selectedBonoId);
+
+    // Verificar si el bono tiene sesiones disponibles
+    if (selectedBono && selectedBono.sesionesDisponibles <= 0) {
+      this.errorMessage = 'Este bono no tiene sesiones disponibles.';
+      this.showErrorAlert = true;  // Mostrar alerta en el frontend
+      return;  // Detener el envío del formulario
+    }
+
+    // Si el bono tiene sesiones disponibles, continuar con la creación de la sesión
     const sesionData: Sesion = {
       fecha: new Date(this.fecha),
       hora: this.hora,
       descripcion: this.descripcion,
       tipo_sesion: this.tipo_sesion,
       paciente_fk: this.pacienteId,
-      n_de_sesion: this.ultimoNumeroSesion,  // Asignar el número de sesión calculado
-      bono_fk: this.selectedBonoId  // Asignar el bono seleccionado
+      n_de_sesion: this.ultimoNumeroSesion,
+      bono_fk: this.selectedBonoId
     };
 
-    // Llamar al servicio para crear la sesión
+    // Realizar la solicitud HTTP solo si el bono tiene sesiones disponibles
     this.sesionService.createSesion(sesionData).subscribe(
       (response: Sesion) => {
-        this.sesionCreada.emit();  // Emitir el Evento
+        this.sesionCreada.emit();
+        this.showErrorAlert = false; // Ocultar alerta si la sesión fue creada con éxito
       },
       (error: any) => {
-        console.error('Error al crear la sesión:', error);
+        // En caso de error del backend, mostrar un mensaje genérico
+        this.errorMessage = 'Error al crear la sesión. Por favor intente nuevamente.';
+        this.showErrorAlert = true;
       }
     );
   }
-}
 
+}
