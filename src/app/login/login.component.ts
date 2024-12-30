@@ -24,7 +24,7 @@ export class LoginComponent {
         this.authService.saveToken(response.accessToken);
 
         // Redirige a la página de pacientes activos
-        this.router.navigate(['/activos']);
+        this.router.navigate(['/lista']);
       },
       error: (err) => {
         console.error('Error en el login:', err);
