@@ -1,0 +1,43 @@
+<h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-4">Última Evaluación del Paciente</h2>
+
+<!-- Mostrar la última evaluación si existe -->
+<div *ngIf="evaluacion; else noEvaluacion">
+  <div class="overflow-y-auto h-[calc(100vh-8rem)]">
+    <div class="space-y-4">
+      <!-- Fecha de Ingreso -->
+      <div
+        class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
+        <p class="font-semibold text-gray-700 dark:text-gray-300">Fecha de Ingreso</p>
+        <p class="text-gray-900 dark:text-white">{{ evaluacion.fechaIngreso | date }}</p>
+      </div>
+
+      <!-- Objetivo -->
+      <div
+        class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
+        <p class="font-semibold text-gray-700 dark:text-gray-300">Objetivo</p>
+        <p class="text-gray-900 dark:text-white">{{ evaluacion.objetivo }}</p>
+      </div>
+
+      <!-- Diagnóstico -->
+      <div
+        class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
+        <p class="font-semibold text-gray-700 dark:text-gray-300">Diagnóstico</p>
+        <p class="text-gray-900 dark:text-white">{{ evaluacion.diagnostico }}</p>
+      </div>
+
+      <!-- Anamnesis -->
+      <div
+        class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
+        <p class="font-semibold text-gray-700 dark:text-gray-300">Anamnesis</p>
+        <p class="text-gray-900 dark:text-white">{{ evaluacion.anamnesis }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mostrar mensaje si no hay evaluaciones -->
+<ng-template #noEvaluacion>
+  <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+    <p class="text-gray-900 dark:text-white">No hay evaluaciones disponibles para este paciente.</p>
+  </div>
+</ng-template>

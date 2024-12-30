@@ -1,0 +1,66 @@
+<form (ngSubmit)="onSubmit()">
+  <div class="grid gap-4 mb-4 sm:grid-cols-2">
+
+    <div>
+      <label for="tipo_sesion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo de
+        Sesión</label>
+      <select id="tipo_sesion" name="tipo_sesion" [(ngModel)]="tipo_sesion"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        required>
+        <option value="" disabled selected>Seleccione un tipo</option>
+        <option value="terapia">Terapia</option>
+        <option value="re-ingreso">Re-ingreso</option>
+        <option value="ingreso">Ingreso</option>
+        <option value="alta">Alta</option>
+      </select>
+    </div>
+    <div>
+      <label for="n_folio" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">N° de Folio</label>
+      <select id="bono_fk" name="bono_fk" [(ngModel)]="selectedBonoId"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        required>
+        <option value="" disabled selected>Seleccione un folio</option>
+        <option *ngFor="let bono of folios" [value]="bono.bono_id">{{ bono.folio }}</option>
+      </select>
+    </div>
+    <div>
+      <label for="fecha" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha</label>
+      <input type="date" id="fecha" name="fecha" [(ngModel)]="fecha"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        required>
+    </div>
+
+    <div>
+      <label for="hora" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hora</label>
+      <input type="time" id="hora" name="hora" [(ngModel)]="hora"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        required>
+    </div>
+
+    <div class="sm:col-span-2">
+      <label for="descripcion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
+      <textarea id="descripcion" name="descripcion" rows="4" [(ngModel)]="descripcion"
+        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        placeholder="Escriba la descripción aquí" required></textarea>
+    </div>
+  </div>
+  <!-- Alerta de error si el bono no tiene sesiones disponibles -->
+  <div *ngIf="showErrorAlert"
+    class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+    role="alert">
+    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+      viewBox="0 0 20 20">
+      <path
+        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+    </svg>
+    <span class="sr-only">Error</span>
+    <div class="ms-3 text-sm font-medium">
+      {{ errorMessage }}
+    </div>
+  </div>
+
+  <button type="submit"
+    class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+    Guardar Sesión
+  </button>
+</form>
