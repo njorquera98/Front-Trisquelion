@@ -102,7 +102,7 @@ export class CrearSesionComponent implements OnInit {
       },
       (error: any) => {
         // En caso de error del backend, mostrar un mensaje genérico
-        this.errorMessage = 'Error al crear la sesión. Por favor intente nuevamente.';
+        this.errorMessage = 'El bono seleccionado no tiene mas sesiones disponibles.';
         this.showErrorAlert = true;
       }
     );
