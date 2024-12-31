@@ -5,7 +5,6 @@ export interface Evaluacion {
   anamnesis: string;
   fechaIngreso: string;
   paciente_fk: any;
-
-
+  bono_fk: any;
 }
 
