@@ -1,6 +1,6 @@
 <form (ngSubmit)="onSubmit()">
   <div class="grid gap-4 mb-4 sm:grid-cols-2">
-
+    <!-- Selección de tipo de sesión -->
     <div>
       <label for="tipo_sesion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo de
         Sesión</label>
@@ -14,15 +14,23 @@
         <option value="Alta">Alta</option>
       </select>
     </div>
+
+    <!-- Selección de evaluación -->
     <div>
-      <label for="n_folio" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">N° de Folio</label>
-      <select id="bono_fk" name="bono_fk" [(ngModel)]="selectedBonoId"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-        required>
-        <option value="" disabled selected>Seleccione un folio</option>
-        <option *ngFor="let bono of folios" [value]="bono.bono_id">{{ bono.folio }}</option>
+      <label for="evaluacion_fk" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Evaluación</label>
+      <select id="evaluacion_fk" name="evaluacion_fk" [(ngModel)]="selectedEvaluacionId" (change)="onEvaluacionChange()"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500
+        focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
+        dark:text-white" required>
+        <option value="" disabled selected>Seleccione una evaluación</option>
+        <option *ngFor="let evaluacion of evaluaciones" [value]="evaluacion.evaluacion_id">
+          {{ evaluacion.diagnostico }}
+        </option>
       </select>
+
     </div>
+
+    <!-- Fecha -->
     <div>
       <label for="fecha" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha</label>
       <input type="date" id="fecha" name="fecha" [(ngModel)]="fecha"
@@ -30,6 +38,7 @@
         required>
     </div>
 
+    <!-- Hora -->
     <div>
       <label for="hora" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hora</label>
       <input type="time" id="hora" name="hora" [(ngModel)]="hora"
@@ -37,6 +46,7 @@
         required>
     </div>
 
+    <!-- Descripción -->
     <div class="sm:col-span-2">
       <label for="descripcion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
       <textarea id="descripcion" name="descripcion" rows="4" [(ngModel)]="descripcion"
@@ -44,14 +54,15 @@
         placeholder="Escriba la descripción aquí" required></textarea>
     </div>
   </div>
-  <!-- Alerta de error si el bono no tiene sesiones disponibles -->
+
+  <!-- Alerta de error si la evaluación no tiene bonos con sesiones -->
   <div *ngIf="showErrorAlert"
     class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
     role="alert">
     <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
       viewBox="0 0 20 20">
       <path
-        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z" />
     </svg>
     <span class="sr-only">Error</span>
     <div class="ms-3 text-sm font-medium">

@@ -27,7 +27,7 @@ export class EvaluacionService {
   }
 
   // Obtener la última evaluación de un paciente
-  getLastEvaluacionByPaciente(pacienteId: number): Observable<Evaluacion> {
+  getUltimaEvaluacionByPaciente(pacienteId: number): Observable<Evaluacion> {
     return this.http.get<Evaluacion>(`${this.apiUrl}/last/${pacienteId}`);
   }
 

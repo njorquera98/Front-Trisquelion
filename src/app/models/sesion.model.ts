@@ -6,7 +6,8 @@ export interface Sesion {
   descripcion: string;
   tipo_sesion: string;
   paciente_fk: number;
-  bono_fk: number;
   folio?: string;
+  bono_fk: number;
+  evaluacion_fk: number;
 }
 

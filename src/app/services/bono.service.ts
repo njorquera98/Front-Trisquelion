@@ -18,5 +18,9 @@ export class BonoService {
   createBono(bonoData: Bono): Observable<Bono> {
     return this.http.post<Bono>(this.apiUrl, bonoData);
   }
+
+  getBonoById(bonoId: number): Observable<Bono> {
+    return this.http.get<Bono>(`${this.apiUrl}/${bonoId}`);
+  }
 }
 

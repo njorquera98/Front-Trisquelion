@@ -31,7 +31,7 @@ export class EvaluacionComponent implements OnInit {
   }
 
   getLastEvaluacion(): void {
-    this.evaluacionService.getLastEvaluacionByPaciente(this.pacienteId).subscribe(
+    this.evaluacionService.getUltimaEvaluacionByPaciente(this.pacienteId).subscribe(
       (data) => {
         this.evaluacion = data;
       },
