@@ -30,49 +30,58 @@
       </div>
     </div>
   </div>
+
   <!-- Contenedor scrollable -->
   <div class="overflow-y-auto h-[calc(100vh-8rem)]">
-    <div class="space-y-4">
-      <!-- Iterar sobre cada sesión -->
-      <div *ngFor="let sesion of sesiones"
-        class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
-        <div class="flex flex-wrap gap-4">
-          <!-- N° de Sesión -->
-          <div class="flex-1 sm:w-1/5 min-w-[120px]">
-            <p class="font-semibold text-gray-700 dark:text-gray-300">N° de Sesión</p>
-            <p class="text-gray-900 dark:text-white">{{ sesion.n_de_sesion }}</p>
-          </div>
+    <ng-container *ngIf="sesiones && sesiones.length > 0; else noSesiones">
+      <div class="space-y-4">
+        <!-- Iterar sobre cada sesión -->
+        <div *ngFor="let sesion of sesiones"
+          class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
+          <div class="flex flex-wrap gap-4">
+            <!-- N° de Sesión -->
+            <div class="flex-1 sm:w-1/5 min-w-[120px]">
+              <p class="font-semibold text-gray-700 dark:text-gray-300">N° de Sesión</p>
+              <p class="text-gray-900 dark:text-white">{{ sesion.n_de_sesion }}</p>
+            </div>
 
-          <!-- Fecha -->
-          <div class="flex-1 sm:w-1/5 min-w-[120px]">
-            <p class="font-semibold text-gray-700 dark:text-gray-300">Fecha</p>
-            <p class="text-gray-900 dark:text-white">{{ sesion.fecha | date }}</p>
-          </div>
+            <!-- Fecha -->
+            <div class="flex-1 sm:w-1/5 min-w-[120px]">
+              <p class="font-semibold text-gray-700 dark:text-gray-300">Fecha</p>
+              <p class="text-gray-900 dark:text-white">{{ sesion.fecha | date }}</p>
+            </div>
 
-          <!-- Hora -->
-          <div class="flex-1 sm:w-1/5 min-w-[120px]">
-            <p class="font-semibold text-gray-700 dark:text-gray-300">Hora</p>
-            <p class="text-gray-900 dark:text-white">{{ sesion.hora }}</p>
-          </div>
+            <!-- Hora -->
+            <div class="flex-1 sm:w-1/5 min-w-[120px]">
+              <p class="font-semibold text-gray-700 dark:text-gray-300">Hora</p>
+              <p class="text-gray-900 dark:text-white">{{ sesion.hora }}</p>
+            </div>
 
-          <!-- Tipo de Sesión -->
-          <div class="flex-1 sm:w-1/5 min-w-[120px]">
-            <p class="font-semibold text-gray-700 dark:text-gray-300">Tipo de Sesión</p>
-            <p class="text-gray-900 dark:text-white">{{ sesion.tipo_sesion }}</p>
-          </div>
+            <!-- Tipo de Sesión -->
+            <div class="flex-1 sm:w-1/5 min-w-[120px]">
+              <p class="font-semibold text-gray-700 dark:text-gray-300">Tipo de Sesión</p>
+              <p class="text-gray-900 dark:text-white">{{ sesion.tipo_sesion }}</p>
+            </div>
 
-          <!-- N° de Folio -->
-          <div class="flex-1 sm:w-1/5 min-w-[120px]">
-            <p class="font-semibold text-gray-700 dark:text-gray-300">N° de Folio</p>
-            <p class="text-gray-900 dark:text-white">{{ sesion.folio || 'N/A' }}</p>
+            <!-- N° de Folio -->
+            <div class="flex-1 sm:w-1/5 min-w-[120px]">
+              <p class="font-semibold text-gray-700 dark:text-gray-300">N° de Folio</p>
+              <p class="text-gray-900 dark:text-white">{{ sesion.folio || 'N/A' }}</p>
+            </div>
           </div>
-        </div>
-
-        <div class="mt-4">
-          <p class="font-semibold text-gray-700 dark:text-gray-300">Descripción</p>
-          <p class="text-gray-900 dark:text-white">{{ sesion.descripcion }}</p>
+          <!-- Descripcion -->
+          <div class="mt-4">
+            <p class="font-semibold text-gray-700 dark:text-gray-300">Descripción</p>
+            <p class="text-gray-900 dark:text-white">{{ sesion.descripcion }}</p>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-container>
   </div>
+
+  <ng-template #noSesiones>
+    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+      <p class="text-gray-900 dark:text-white">No hay sesiones disponibles para este paciente.</p>
+    </div>
+  </ng-template>
 </div>
