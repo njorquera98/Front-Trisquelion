@@ -9,28 +9,30 @@ import { ConsultasMedicasComponent } from '../consultas-medicas/consultas-medica
 import { EvaluacionComponent } from '../evaluacion/evaluacion.component';
 import { PatologiasComponent } from '../patologias/patologias.component';
 import { BonosComponent } from '../bonos/bonos.component';
+import { CrearPacienteComponent } from '../crear-paciente/crear-paciente.component';
 
 @Component({
   selector: 'app-paciente',
   standalone: true,
-  imports: [CommonModule, TabsComponent, SesionesComponent, ConsultasMedicasComponent, EvaluacionComponent, PatologiasComponent, BonosComponent], // Importa tus componentes aquí
+  imports: [CommonModule, TabsComponent, SesionesComponent, ConsultasMedicasComponent, EvaluacionComponent, PatologiasComponent, BonosComponent, CrearPacienteComponent], // Importa tus componentes aquí
   templateUrl: './paciente.component.html',
   styleUrls: ['./paciente.component.css']
 })
 export class PacienteComponent implements OnInit {
   pacienteId: number = 0;
   paciente: Paciente | null = null;
-
-  // Controla la vista actual
-  vistaSeleccionada: string = 'sesiones';
+  mostrarModal: boolean = false;
+  vistaSeleccionada: string = 'sesiones'; // Vista por defecto
+  modo: 'crear' | 'editar' = 'crear';
 
   constructor(
     private route: ActivatedRoute,
-    private pacienteService: PacienteService
+    private pacienteService: PacienteService,
   ) { }
 
   ngOnInit(): void {
-    this.pacienteId = Number(this.route.snapshot.paramMap.get('id'));
+    const pacienteIdParam = this.route.snapshot.paramMap.get('id');
+    this.pacienteId = pacienteIdParam ? Number(pacienteIdParam) : 0;
 
     if (this.pacienteId) {
       this.cargarPaciente(this.pacienteId);
@@ -38,37 +40,48 @@ export class PacienteComponent implements OnInit {
   }
 
   cargarPaciente(pacienteId: number): void {
-    this.pacienteService.getPaciente(pacienteId).subscribe(
-      (paciente) => {
+    this.pacienteService.getPaciente(pacienteId).subscribe({
+      next: (paciente) => {
         this.paciente = paciente;
       },
-      (error) => {
+      error: (error) => {
         console.error('Error al cargar el paciente:', error);
-      }
-    );
+      },
+    });
   }
 
-  // Cambiar la vista según el evento emitido por el componente Tabs
   cambiarVista(vista: string): void {
     this.vistaSeleccionada = vista;
   }
 
-  mostrarModalBono = false; // Variable para controlar la visibilidad del modal
-
-  // Método para abrir el modal de crear bono
-  abrirModalBono() {
-    this.mostrarModalBono = true;
+  abrirModal(): void {
+    this.mostrarModal = true;
   }
 
-  // Método para cerrar el modal de crear bono
-  cerrarModalBono() {
-    this.mostrarModalBono = false;
+  cerrarModal(): void {
+    this.mostrarModal = false;
   }
 
-  // Método para manejar la creación del bono
-  manejarBonoCreado() {
-    this.cerrarModalBono(); // Cerrar el modal
-    // Puedes llamar a un método para actualizar la lista de bonos si es necesario
+  guardarPaciente(paciente: Paciente): void {
+    if (this.pacienteId) {
+      this.pacienteService.updatePaciente(this.pacienteId, paciente).subscribe({
+        next: (pacienteActualizado) => {
+          console.log('Paciente actualizado:', pacienteActualizado);
+          this.paciente = pacienteActualizado;
+          this.cerrarModal();
+        },
+        error: (error) => {
+          console.error('Error al actualizar el paciente:', error);
+        },
+      });
+    } else {
+      console.error('No hay un ID de paciente para actualizar.');
+    }
+  }
+
+
+  onPacienteActualizado(pacienteActualizado: Paciente): void {
+    console.log('Paciente actualizado desde el modal:', pacienteActualizado);
+    this.guardarPaciente(pacienteActualizado);
   }
 }
-

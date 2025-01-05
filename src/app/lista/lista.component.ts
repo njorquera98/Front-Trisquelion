@@ -4,56 +4,67 @@ import { PacienteService } from '../services/paciente.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Paciente } from '../models/paciente.model';
+import { CrearPacienteComponent } from '../crear-paciente/crear-paciente.component';
 
 @Component({
   selector: 'app-lista',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CrearPacienteComponent],
   templateUrl: './lista.component.html',
   styleUrl: './lista.component.css'
 })
 export class ListaComponent {
   pacientes: Paciente[] = [];
-  toggleActivo: boolean = true;  // Controla el estado del toggle
+  pacienteSeleccionado: Paciente | null = null;  // Aquí agregamos la propiedad para el paciente seleccionado
+  toggleActivo: boolean = true;
+  mostrarModal: boolean = false;  // Controla la visibilidad del modal
 
   constructor(private pacienteService: PacienteService, private router: Router) { }
 
   ngOnInit(): void {
-    this.cargarPacientes();  // Cargar los pacientes al inicio
+    this.cargarPacientes();  // Cargar pacientes al iniciar
   }
 
-  // Método para cargar los pacientes según el estado del toggle
-  cargarPacientes() {
-    console.log('Estado del toggleActivo:', this.toggleActivo);  // Verificar si el valor cambia
-    if (this.toggleActivo) {
-      this.pacienteService.getPacientesActivos().subscribe({
-        next: (data) => {
-          this.pacientes = data;
-        },
-        error: (err) => {
-          console.error('Error al obtener pacientes activos:', err);
-        }
-      });
-    } else {
-      this.pacienteService.getPacientesInactivos().subscribe({
-        next: (data) => {
-          this.pacientes = data;
-        },
-        error: (err) => {
-          console.error('Error al obtener pacientes inactivos:', err);
-        }
-      });
-    }
+  // Método para cargar pacientes según el estado del toggle
+  cargarPacientes(): void {
+    const serviceMethod = this.toggleActivo
+      ? this.pacienteService.getPacientesActivos()
+      : this.pacienteService.getPacientesInactivos();
+
+    serviceMethod.subscribe({
+      next: (data) => {
+        this.pacientes = data;
+      },
+      error: (err) => {
+        console.error('Error al obtener pacientes:', err);
+      },
+    });
   }
 
   // Método que se ejecuta cuando se cambia el toggle
-  onToggleChange() {
-    console.log('Toggle cambiado:', this.toggleActivo);  // Verificar si cambia correctamente
+  onToggleChange(): void {
+    console.log('Toggle cambiado:', this.toggleActivo);
     this.cargarPacientes();  // Recargar pacientes según el toggle
+  }
+
+  // Métodos para abrir y cerrar el modal
+  abrirModal(paciente?: Paciente): void {
+    this.pacienteSeleccionado = paciente || null;  // Asignar el paciente seleccionado o null si no se selecciona uno
+    this.mostrarModal = true; // Mostrar el modal
+  }
+
+  cerrarModal(): void {
+    this.mostrarModal = false; // Ocultar el modal
+    this.pacienteSeleccionado = null;  // Limpiar la selección del paciente
+  }
+
+  // Método para manejar el evento de paciente guardado
+  onPacienteGuardado(paciente: Paciente): void {
+    this.pacientes.push(paciente);
+    this.cerrarModal();
   }
 
   // Método para redirigir a la página de sesiones de un paciente
   redirigirAPaciente(pacienteId: number): void {
-    this.router.navigate([`/paciente/${pacienteId}`]); // Redirige a /sesiones/{id}
+    this.router.navigate([`/paciente/${pacienteId}`]);
   }
 }
-
