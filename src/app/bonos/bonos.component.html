@@ -33,36 +33,45 @@
 
   <!-- Contenedor scrollable para bonos -->
   <div class="overflow-y-auto h-[calc(100vh-8rem)]">
+
     <div class="space-y-4">
       <!-- Iterar sobre cada bono -->
       <div *ngFor="let bono of bonos"
         class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md mb-4 border border-gray-300 dark:border-gray-600">
-        <div class="flex flex-wrap gap-4">
-          <!-- N° de Bono -->
-          <div class="flex-1 sm:w-1/5 min-w-[120px]">
-            <p class="font-semibold text-gray-700 dark:text-gray-300">N° de Folio</p>
-            <p class="text-gray-900 dark:text-white">{{ bono.folio }}</p>
-          </div>
+        <ng-container *ngIf="bonos && bonos.length > 0; else noBonos">
 
-          <!-- Valor -->
-          <div class="flex-1 sm:w-1/5 min-w-[120px]">
-            <p class="font-semibold text-gray-700 dark:text-gray-300">Valor</p>
-            <p class="text-gray-900 dark:text-white">{{ bono.valor }}</p>
-          </div>
+          <div class="flex flex-wrap gap-4">
+            <!-- N° de Bono -->
+            <div class="flex-1 sm:w-1/5 min-w-[120px]">
+              <p class="font-semibold text-gray-700 dark:text-gray-300">N° de Folio</p>
+              <p class="text-gray-900 dark:text-white">{{ bono.folio }}</p>
+            </div>
 
-          <!-- Cantidad -->
-          <div class="flex-1 sm:w-1/5 min-w-[120px]">
-            <p class="font-semibold text-gray-700 dark:text-gray-300">Cantidad</p>
-            <p class="text-gray-900 dark:text-white">{{ bono.cantidad }}</p>
-          </div>
+            <!-- Valor -->
+            <div class="flex-1 sm:w-1/5 min-w-[120px]">
+              <p class="font-semibold text-gray-700 dark:text-gray-300">Valor</p>
+              <p class="text-gray-900 dark:text-white">{{ bono.valor }}</p>
+            </div>
 
-          <!-- Sesiones Disponibles -->
-          <div class="flex-1 sm:w-1/5 min-w-[120px]">
-            <p class="font-semibold text-gray-700 dark:text-gray-300">Sesiones Disponibles</p>
-            <p class="text-gray-900 dark:text-white">{{ bono.sesionesDisponibles }}</p>
+            <!-- Cantidad -->
+            <div class="flex-1 sm:w-1/5 min-w-[120px]">
+              <p class="font-semibold text-gray-700 dark:text-gray-300">Cantidad</p>
+              <p class="text-gray-900 dark:text-white">{{ bono.cantidad }}</p>
+            </div>
+
+            <!-- Sesiones Disponibles -->
+            <div class="flex-1 sm:w-1/5 min-w-[120px]">
+              <p class="font-semibold text-gray-700 dark:text-gray-300">Sesiones Disponibles</p>
+              <p class="text-gray-900 dark:text-white">{{ bono.sesionesDisponibles }}</p>
+            </div>
           </div>
-        </div>
+        </ng-container>
       </div>
+      <ng-template #noBonos>
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <p class="text-gray-900 dark:text-white">No hay bonos disponibles para este paciente.</p>
+        </div>
+      </ng-template>
     </div>
   </div>
 </div>
