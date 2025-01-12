@@ -1,18 +1,15 @@
 <div class="container mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-
-
+  <!-- Tabs -->
   <app-tabs (onTabSeleccionada)="cambiarVista($event)" [pacienteId]="pacienteId"></app-tabs>
 
-  <!-- Contenedor principal con dos columnas responsivas -->
+  <!-- Contenedor principal con dos columnas -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Columna izquierda: Información del paciente y evaluación -->
-
+    <!-- Columna izquierda: Información del paciente -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
       <h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-4">Información del Paciente</h2>
       <div class="flex justify-center mt-4">
-        <button (click)="abrirModal()" class=" flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4
-        focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2
-        dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">
+        <button (click)="abrirModal('editar', pacienteSeleccionado)"
+          class="flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -24,41 +21,40 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <h3 class="font-semibold text-gray-700 dark:text-gray-300">Nombre</h3>
-          <p class="text-gray-900 dark:text-white">{{ paciente?.nombre }} {{ paciente?.apellido }}</p>
+          <p class="text-gray-900 dark:text-white">{{ pacienteSeleccionado?.nombre }} {{ pacienteSeleccionado?.apellido
+            }}</p>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <h3 class="font-semibold text-gray-700 dark:text-gray-300">Teléfono</h3>
-          <p class="text-gray-900 dark:text-white">{{ paciente?.telefono }}</p>
+          <p class="text-gray-900 dark:text-white">{{ pacienteSeleccionado?.telefono }}</p>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <h3 class="font-semibold text-gray-700 dark:text-gray-300">Rut</h3>
-          <p class="text-gray-900 dark:text-white">{{ paciente?.rut }}</p>
+          <p class="text-gray-900 dark:text-white">{{ pacienteSeleccionado?.rut }}</p>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <h3 class="font-semibold text-gray-700 dark:text-gray-300">Correo</h3>
-          <p class="text-gray-900 dark:text-white">{{ paciente?.correo }}</p>
+          <p class="text-gray-900 dark:text-white">{{ pacienteSeleccionado?.correo }}</p>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <h3 class="font-semibold text-gray-700 dark:text-gray-300">Domicilio</h3>
-          <p class="text-gray-900 dark:text-white">{{ paciente?.domicilio }}</p>
+          <p class="text-gray-900 dark:text-white">{{ pacienteSeleccionado?.domicilio }}</p>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <h3 class="font-semibold text-gray-700 dark:text-gray-300">Fecha de Nacimiento</h3>
-          <p class="text-gray-900 dark:text-white">{{ paciente?.fecha_nacimiento | date }}</p>
+          <p class="text-gray-900 dark:text-white">{{ pacienteSeleccionado?.fecha_nacimiento | date }}</p>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <h3 class="font-semibold text-gray-700 dark:text-gray-300">Previsión</h3>
-          <p class="text-gray-900 dark:text-white">{{ paciente?.prevision }}</p>
+          <p class="text-gray-900 dark:text-white">{{ pacienteSeleccionado?.prevision }}</p>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <h3 class="font-semibold text-gray-700 dark:text-gray-300">Estado</h3>
-          <div class="flex items-center space-x-4"> <!-- Aumentando el espacio con space-x-4 -->
-            <p class="text-gray-900 dark:text-white">{{ paciente?.activo ? 'Activo' : 'Inactivo' }}</p>
-          </div>
+          <p class="text-gray-900 dark:text-white">{{ pacienteSeleccionado?.activo ? 'Activo' : 'Inactivo' }}</p>
         </div>
       </div>
 
-      <div class="mt-8">
+      <div class="mt-4">
         <app-evaluacion *ngIf="vistaSeleccionada === 'sesiones'"></app-evaluacion>
         <app-patologias *ngIf="vistaSeleccionada === 'consultas'"></app-patologias>
       </div>
@@ -69,7 +65,9 @@
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-3/4 md:w-1/2">
         <!-- Header del Modal -->
         <div class="flex justify-between items-center border-b p-4">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Crear Nueva Evaluación</h3>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            {{ modo === 'crear' ? 'Crear Paciente' : 'Editar Paciente' }}
+          </h3>
           <button class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" (click)="cerrarModal()">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
@@ -79,17 +77,15 @@
         </div>
         <!-- Contenido del Modal -->
         <div class="p-6">
-          <app-crear-paciente *ngIf="mostrarModal" [paciente]="paciente" [modo]="modo"
-            (pacienteGuardado)="guardarPaciente($event)" (cerrarModal)="cerrarModal()">
+          <app-crear-paciente [modo]="modo" [paciente]="pacienteSeleccionado"
+            (pacienteGuardado)="onPacienteGuardado($event)" (cerrarModal)="cerrarModal()">
           </app-crear-paciente>
         </div>
       </div>
     </div>
 
-
-
-    <!-- Columna derecha: Sesiones del paciente -->
-    <div class="contenido-dinamico">
+    <!-- Columna derecha: Contenido dinámico -->
+    <div>
       <app-sesiones *ngIf="vistaSeleccionada === 'sesiones'" [pacienteId]="pacienteId"></app-sesiones>
       <app-consultas-medicas *ngIf="vistaSeleccionada === 'consultas'"
         [pacienteId]="pacienteId"></app-consultas-medicas>

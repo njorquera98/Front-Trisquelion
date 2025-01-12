@@ -19,15 +19,15 @@ import { CrearPacienteComponent } from '../crear-paciente/crear-paciente.compone
   styleUrls: ['./paciente.component.css']
 })
 export class PacienteComponent implements OnInit {
-  pacienteId: number = 0;
-  paciente: Paciente | null = null;
-  mostrarModal: boolean = false;
+  pacienteId: number = 0; // ID del paciente, si está en modo edición
+  pacienteSeleccionado: Paciente | null = null; // Paciente actual
+  mostrarModal: boolean = false; // Estado del modal
   vistaSeleccionada: string = 'sesiones'; // Vista por defecto
-  modo: 'crear' | 'editar' = 'crear';
+  modo: 'crear' | 'editar' = 'crear'; // Modo del modal
 
   constructor(
     private route: ActivatedRoute,
-    private pacienteService: PacienteService,
+    private pacienteService: PacienteService
   ) { }
 
   ngOnInit(): void {
@@ -42,7 +42,7 @@ export class PacienteComponent implements OnInit {
   cargarPaciente(pacienteId: number): void {
     this.pacienteService.getPaciente(pacienteId).subscribe({
       next: (paciente) => {
-        this.paciente = paciente;
+        this.pacienteSeleccionado = paciente;
       },
       error: (error) => {
         console.error('Error al cargar el paciente:', error);
@@ -50,38 +50,47 @@ export class PacienteComponent implements OnInit {
     });
   }
 
-  cambiarVista(vista: string): void {
-    this.vistaSeleccionada = vista;
-  }
-
-  abrirModal(): void {
+  abrirModal(modo: 'crear' | 'editar', paciente: Paciente | null = null): void {
+    this.modo = modo;
+    this.pacienteSeleccionado = modo === 'editar' ? paciente : null;
     this.mostrarModal = true;
   }
 
   cerrarModal(): void {
     this.mostrarModal = false;
+    this.cargarPaciente(this.pacienteId);
   }
 
   guardarPaciente(paciente: Paciente): void {
-    if (this.pacienteId) {
+    if (this.modo === 'crear') {
+      this.pacienteService.createPaciente(paciente).subscribe({
+        next: (nuevoPaciente) => {
+          console.log('Paciente creado:', nuevoPaciente);
+          this.cerrarModal();
+        },
+        error: (error) => {
+          console.error('Error al crear el paciente:', error);
+        },
+      });
+    } else if (this.modo === 'editar' && this.pacienteId) {
       this.pacienteService.updatePaciente(this.pacienteId, paciente).subscribe({
         next: (pacienteActualizado) => {
           console.log('Paciente actualizado:', pacienteActualizado);
-          this.paciente = pacienteActualizado;
+          this.cargarPaciente(this.pacienteId);
           this.cerrarModal();
         },
         error: (error) => {
           console.error('Error al actualizar el paciente:', error);
         },
       });
-    } else {
-      console.error('No hay un ID de paciente para actualizar.');
     }
   }
 
+  cambiarVista(vista: string): void {
+    this.vistaSeleccionada = vista;
+  }
 
-  onPacienteActualizado(pacienteActualizado: Paciente): void {
-    console.log('Paciente actualizado desde el modal:', pacienteActualizado);
-    this.guardarPaciente(pacienteActualizado);
+  onPacienteGuardado(paciente: Paciente): void {
+    this.guardarPaciente(paciente);
   }
 }
