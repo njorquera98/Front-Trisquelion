@@ -28,7 +28,7 @@ export class LoginComponent {
       },
       error: (err) => {
         console.error('Error en el login:', err);
-        alert('Credenciales incorrectas o error en el servidor');
+        alert('Usuario Invalido');
       },
     });
   }
