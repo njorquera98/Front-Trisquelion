@@ -1,0 +1,77 @@
+<div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+  <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">Asistencia del Paciente</h2>
+
+  <!-- Toggle Activo -->
+  <div class="flex items-center justify-between mb-6">
+    <label class="inline-flex items-center cursor-pointer">
+      <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="toggleActivo" (change)="onToggleChange()">
+      <div
+        class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+      </div>
+      <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+        {{ toggleActivo ? 'Paciente Activo' : 'Paciente Inactivo'}}
+      </span>
+    </label>
+  </div>
+
+  <!-- Tabla de horarios -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full table-auto border-collapse">
+      <thead>
+        <tr>
+          <th class="border px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Día</th>
+          <th class="border px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Horarios</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dia of dias">
+          <td class="border px-4 py-2 font-medium text-gray-900 dark:text-white">{{ dia }}</td>
+          <td class="border px-4 py-2">
+            <div class="flex flex-wrap gap-2">
+              <button *ngFor="let hora of horarios" (click)="toggleHorario(dia, hora)"
+                [class.bg-blue-600]="asistencia[dia].includes(hora)" [class.text-white]="asistencia[dia].includes(hora)"
+                class="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 hover:bg-blue-700 hover:text-white">
+                {{ hora }}
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Segunda Opcion</h2>
+  <!-- Tabla de horarios -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full table-auto border-collapse">
+      <thead>
+        <tr>
+          <th class="border px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Día</th>
+          <th class="border px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Horario</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dia of dias">
+          <td class="border px-4 py-2 font-medium text-gray-900 dark:text-white">{{ dia }}</td>
+          <td class="border px-4 py-2">
+            <select class="w-full p-2 border rounded bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-white"
+              (change)="onHorarioChange(dia, $event)">
+              <option [value]="" disabled selected>Seleccionar horario</option>
+              <option *ngFor="let hora of horarios" [value]="hora">{{ hora }}</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- Botón para guardar -->
+  <div class="mt-6 text-center">
+    <button
+      class="px-6 py-2 bg-green-600 text-white font-medium rounded-lg shadow-md hover:bg-green-700 focus:outline-none"
+      (click)="guardarAsistencia()">
+      Guardar Asistencia
+    </button>
+  </div>
+</div>
