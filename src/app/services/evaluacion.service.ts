@@ -33,7 +33,12 @@ export class EvaluacionService {
 
   // Actualizar evaluación
   updateEvaluacion(id: number, evaluacion: Evaluacion): Observable<Evaluacion> {
-    return this.http.put<Evaluacion>(`${this.apiUrl}/${id}`, evaluacion);
+    return this.http.patch<Evaluacion>(`${this.apiUrl}/${id}`, evaluacion);
+  }
+
+  // Obtener Evaluaciones por paciente
+  getEvaluacionesByPaciente(pacienteId: number): Observable<Evaluacion[]> {
+    return this.http.get<Evaluacion[]>(`${this.apiUrl}/paciente/${pacienteId}`);
   }
 
 }

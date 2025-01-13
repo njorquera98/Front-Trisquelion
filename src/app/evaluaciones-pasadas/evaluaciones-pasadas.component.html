@@ -1,0 +1,34 @@
+<div *ngIf="evaluaciones.length > 0; else noEvaluacion" class="p-4 space-y-6">
+  <div *ngFor="let evaluacion of evaluaciones"
+    class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md border border-gray-300 dark:border-gray-600">
+
+    <!-- Fecha de Ingreso -->
+    <p class="text-gray-900 dark:text-white">
+      <span class="font-semibold text-gray-700 dark:text-gray-300">Fecha de Ingreso:</span> {{ evaluacion.fechaIngreso |
+      date}}
+    </p>
+
+    <!-- Objetivo -->
+    <p class="text-gray-900 dark:text-white">
+      <span class="font-semibold text-gray-700 dark:text-gray-300">Objetivo:</span> {{ evaluacion.objetivo }}
+    </p>
+
+    <!-- Diagnóstico -->
+    <p class="text-gray-900 dark:text-white">
+      <span class="font-semibold text-gray-700 dark:text-gray-300">Diagnóstico:</span> {{ evaluacion.diagnostico }}
+    </p>
+
+    <!-- Anamnesis -->
+    <p class="text-gray-900 dark:text-white">
+      <span class="font-semibold text-gray-700 dark:text-gray-300">Anamnesis:</span> {{ evaluacion.anamnesis }}
+    </p>
+
+  </div>
+</div>
+
+<!-- Si no hay evaluaciones -->
+<ng-template #noEvaluacion>
+  <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md border border-gray-300 dark:border-gray-600">
+    <p class="text-gray-900 dark:text-white">No se han encontrado evaluaciones pasadas para este paciente.</p>
+  </div>
+</ng-template>
