@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
   selector: 'app-crear-bono',
   imports: [CommonModule, FormsModule],
   templateUrl: './crear-bono.component.html',
-  styleUrls: ['./crear-bono.component.css']
+  styleUrl: './crear-bono.component.css'
 })
 export class CrearBonoComponent implements OnInit {
   pacienteId: number = 0;
@@ -18,6 +18,7 @@ export class CrearBonoComponent implements OnInit {
   folio: string = '';
   sesionesDisponibles: number = 0;
 
+  @Input() bono: Bono | null = null; // Bono a editar (si es null, se crea uno nuevo)
   @Output() bonoCreado: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
@@ -26,39 +27,66 @@ export class CrearBonoComponent implements OnInit {
   ) {
     // Obtener el pacienteId desde la URL
     this.route.params.subscribe(params => {
-      this.pacienteId = +params['id'];  // Asignar el pacienteId desde la URL
+      this.pacienteId = +params['id'];
     });
   }
 
   ngOnInit(): void {
-    // Verifica que pacienteId esté disponible
-    console.log('pacienteId recibido en CrearBonoComponent:', this.pacienteId);
+    // Si se pasa un bono por @Input, prellenar los campos con sus datos
+    if (this.bono) {
+      this.cantidad = this.bono.cantidad;
+      this.valor = this.bono.valor;
+      this.folio = this.bono.folio;
+      this.sesionesDisponibles = this.bono.sesionesDisponibles;
+    }
   }
 
   onSubmit(): void {
-    if (this.pacienteId === 0) {
-      console.error('El ID del paciente no está definido');
-      return;
-    }
+    if (this.bono) {
+      const bonoData: Bono = {
+        ...this.bono,
+        paciente_fk: this.pacienteId,
+        cantidad: this.cantidad,
+        valor: this.valor,
+        folio: this.folio,
+        sesionesDisponibles: this.sesionesDisponibles,
+      };
 
-    const nuevoBono: Bono = {
-      bono_id: 0,
-      paciente_fk: this.pacienteId,
-      cantidad: this.cantidad,
-      valor: this.valor,
-      folio: this.folio,
-      sesionesDisponibles: this.sesionesDisponibles
-    };
-
-    // Llamar al servicio para crear el bono
-    this.bonoService.createBono(nuevoBono).subscribe(
-      (response: Bono) => {
-        console.log('Bono creado:', response);
-        this.bonoCreado.emit();  // Emitir el evento
-      },
-      (error) => {
-        console.error('Error al crear bono:', error);
+      // Verificar que bono_id no sea undefined antes de llamar a updateBono
+      if (bonoData.bono_id !== undefined) {
+        this.bonoService.updateBono(bonoData.bono_id, bonoData).subscribe(
+          (response: Bono) => {
+            console.log('Bono actualizado:', response);
+            this.bonoCreado.emit(); // Emitir evento para actualizar la lista
+          },
+          (error) => {
+            console.error('Error al actualizar el bono:', error);
+          }
+        );
+      } else {
+        console.error('Error: bono_id es undefined. No se puede actualizar el bono.');
       }
-    );
+    } else {
+      // Lógica para crear un nuevo bono
+      const nuevoBono: Bono = {
+        bono_id: 0,
+        paciente_fk: this.pacienteId,
+        cantidad: this.cantidad,
+        valor: this.valor,
+        folio: this.folio,
+        sesionesDisponibles: this.cantidad,
+      };
+
+      this.bonoService.createBono(nuevoBono).subscribe(
+        (response: Bono) => {
+          console.log('Bono creado:', response);
+          this.bonoCreado.emit(); // Emitir evento para actualizar la lista
+        },
+        (error) => {
+          console.error('Error al crear bono:', error);
+        }
+      );
+    }
   }
+
 }

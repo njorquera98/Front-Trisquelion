@@ -22,5 +22,9 @@ export class BonoService {
   getBonoById(bonoId: number): Observable<Bono> {
     return this.http.get<Bono>(`${this.apiUrl}/${bonoId}`);
   }
+
+  updateBono(bonoId: number, bono: Bono): Observable<Bono> {
+    return this.http.patch<Bono>(`${this.apiUrl}/${bonoId}`, bono);
+  }
 }
 

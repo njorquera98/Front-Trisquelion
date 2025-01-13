@@ -15,6 +15,7 @@ export class BonosComponent implements OnInit {
   @Input() pacienteId!: number;
   bonos: Bono[] = [];
   mostrarModal = false;
+  bonoEnEdicion: Bono | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,11 +43,23 @@ export class BonosComponent implements OnInit {
     );
   }
 
-  abrirModal() {
-    this.mostrarModal = true;
+  abrirModal(bono: Bono | null = null): void {
+    if (bono && bono.bono_id) {
+      this.bonoService.getBonoById(bono.bono_id).subscribe({
+        next: (bonoCompleto) => {
+          this.bonoEnEdicion = bonoCompleto;
+          this.mostrarModal = true;
+        },
+        error: (error) => console.error('Error al cargar el bono:', error),
+      });
+    } else {
+      this.bonoEnEdicion = null; // Crear un nuevo bono
+      this.mostrarModal = true;
+    }
   }
 
-  cerrarModal() {
+  cerrarModal(): void {
+    this.bonoEnEdicion = null;
     this.mostrarModal = false;
   }
 
