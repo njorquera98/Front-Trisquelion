@@ -16,6 +16,7 @@ export class SesionesComponent implements OnInit {
   @Input() pacienteId!: number;
   sesiones: any[] = [];
   mostrarModal = false;
+  sesionEnEdicion: Sesion | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,11 +42,27 @@ export class SesionesComponent implements OnInit {
     );
   }
 
-  abrirModal() {
-    this.mostrarModal = true;
+  abrirModal(sesion: Sesion | null = null): void {
+    if (sesion && sesion.sesion_id) {
+      // Obtener los datos de la sesión desde el servicio
+      this.sesionService.getSesionById(sesion.sesion_id).subscribe({
+        next: (sesionCompleta) => {
+          this.sesionEnEdicion = sesionCompleta;
+          this.mostrarModal = true; // Mostrar el modal solo después de obtener los datos
+        },
+        error: (err) => {
+          console.error('Error al cargar la sesión:', err);
+        },
+      });
+    } else {
+      this.sesionEnEdicion = null; // Crear una nueva sesión
+      this.mostrarModal = true;
+    }
   }
 
-  cerrarModal() {
+
+  cerrarModal(): void {
+    this.sesionEnEdicion = null; // Limpiar sesión en edición
     this.mostrarModal = false;
   }
 

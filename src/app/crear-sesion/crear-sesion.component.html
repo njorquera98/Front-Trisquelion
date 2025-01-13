@@ -2,8 +2,9 @@
   <div class="grid gap-4 mb-4 sm:grid-cols-2">
     <!-- Selección de tipo de sesión -->
     <div>
-      <label for="tipo_sesion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo de
-        Sesión</label>
+      <label for="tipo_sesion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+        Tipo de Sesión
+      </label>
       <select id="tipo_sesion" name="tipo_sesion" [(ngModel)]="tipo_sesion"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
         required>
@@ -17,18 +18,20 @@
 
     <!-- Selección de evaluación -->
     <div>
-      <label for="evaluacion_fk" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Evaluación</label>
+      <label for="evaluacion_fk" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+        Diagnostico
+      </label>
       <select id="evaluacion_fk" name="evaluacion_fk" [(ngModel)]="selectedEvaluacionId" (change)="onEvaluacionChange()"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500
-        focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
-        dark:text-white" required>
-        <option value="" disabled selected>Seleccione una evaluación</option>
+  focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
+  dark:text-white" required>
+        <option value="" disabled selected>Seleccione un diagnostico</option>
         <option *ngFor="let evaluacion of evaluaciones" [value]="evaluacion.evaluacion_id">
           {{ evaluacion.diagnostico }}
         </option>
       </select>
-
     </div>
+
 
     <!-- Fecha -->
     <div>
@@ -55,17 +58,16 @@
     </div>
   </div>
 
-  <!-- Alerta de error si la evaluación no tiene bonos con sesiones -->
+  <!-- Alerta de error -->
   <div *ngIf="showErrorAlert"
     class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
     role="alert">
-    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-      viewBox="0 0 20 20">
+    <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
       <path
         d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z" />
     </svg>
     <span class="sr-only">Error</span>
-    <div class="ms-3 text-sm font-medium">
+    <div class="ml-3 text-sm font-medium">
       {{ errorMessage }}
     </div>
   </div>

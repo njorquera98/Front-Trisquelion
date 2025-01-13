@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SesionService } from '../services/sesion.service';
 import { ActivatedRoute } from '@angular/router';
 import { Sesion } from '../models/sesion.model';
@@ -26,8 +26,11 @@ export class CrearSesionComponent implements OnInit {
   errorMessage: string = '';
   showErrorAlert: boolean = false;
   bonoDisponible: boolean = false;
+  isEditMode: boolean = false;
 
+  @Output() sesionActualizada: EventEmitter<void> = new EventEmitter<void>();
   @Output() sesionCreada: EventEmitter<void> = new EventEmitter<void>();
+  @Input() sesion: Sesion | null | undefined;
 
   constructor(
     private sesionService: SesionService,
@@ -37,20 +40,79 @@ export class CrearSesionComponent implements OnInit {
   ) {
     this.route.params.subscribe(params => {
       this.pacienteId = +params['id'];
-      console.log('Paciente ID asignado:', this.pacienteId); // Verifica si el valor de pacienteId es correcto
+      console.log('Paciente ID asignado:', this.pacienteId);
     });
   }
 
   ngOnInit(): void {
     this.getEvaluaciones();
     this.getLastSesion();
+
+    // Determinar si estamos editando una sesión
+    if (this.sesion) {
+      this.isEditMode = true;
+      console.log('Modo edición activado:', this.sesion);
+    } else {
+      this.isEditMode = false;
+      console.log('Modo creación activado.');
+    }
+  }
+  checkSesionesDisponibles(bono: any): void {
+    const bonoId = bono.bono_id;
+    this.bonoService.getBonoById(bonoId).subscribe(
+      (bonoData) => {
+        console.log('Bono recibido:', bonoData);
+        const sesionesDisponibles = Number(bonoData.cantidad);
+        console.log('Sesiones disponibles como número:', sesionesDisponibles);
+
+        if (sesionesDisponibles > 0) {
+          this.bonoDisponible = true;
+          console.log('Bono disponible, sesiones restantes:', sesionesDisponibles);
+        } else {
+          this.bonoDisponible = false;
+          console.log('No hay sesiones disponibles.');
+        }
+
+        if (!this.bonoDisponible) {
+          this.errorMessage = 'No hay sesiones disponibles en el bono de esta evaluación.';
+          this.showErrorAlert = true;
+        } else {
+          this.showErrorAlert = false;
+        }
+      },
+      (error) => {
+        console.error('Error al verificar el bono:', error);
+        this.errorMessage = 'Error al verificar el bono.';
+        this.showErrorAlert = true;
+      }
+    );
   }
 
   getEvaluaciones(): void {
+    console.log('Solicitando evaluaciones para paciente ID:', this.pacienteId);
+
     this.evaluacionService.getUltimaEvaluacionByPaciente(this.pacienteId).subscribe(
       (data: Evaluacion) => {
-        this.evaluaciones = [data];
-        console.log('Evaluaciones obtenidas:', this.evaluaciones);
+        this.evaluaciones = [data]; // Cargar la última evaluación en la lista
+        console.log('Última evaluación recibida:', data);
+
+        // Asignar el ID de la evaluación recibida a selectedEvaluacionId
+        if (data.evaluacion_id !== undefined) {
+          this.selectedEvaluacionId = data.evaluacion_id;
+          console.log('Selected Evaluacion ID asignado:', this.selectedEvaluacionId);
+        } else {
+          console.warn('Evaluación no tiene un ID válido');
+          this.selectedEvaluacionId = 0; // Asignamos un valor por defecto si no es válido
+        }
+
+        // Acceso dinámico a la propiedad bono usando "any"
+        const bono = (data as any).bono; // Cast a 'any' para acceder a la propiedad bono
+        if (bono) {
+          console.log('Bono recibido:', bono);
+          this.checkSesionesDisponibles(bono);
+        } else {
+          console.warn('No se encontró un bono asociado a esta evaluación.');
+        }
       },
       (error: any) => {
         console.error('Error al obtener las evaluaciones:', error);
@@ -58,9 +120,13 @@ export class CrearSesionComponent implements OnInit {
     );
   }
 
+
+
   getLastSesion(): void {
     this.sesionService.getLastSesion(this.pacienteId).subscribe(
       (data: Sesion) => {
+        console.log('Sesion recibida:', data); // Verificar contenido de la sesión
+        this.sesion = data;
         this.ultimoNumeroSesion = data?.n_de_sesion ? data.n_de_sesion + 1 : 1;
       },
       (error: any) => {
@@ -72,7 +138,6 @@ export class CrearSesionComponent implements OnInit {
   onEvaluacionChange(): void {
     console.log('onEvaluacionChange ejecutado');
 
-    // Verifica si el valor seleccionado es un número y luego busca la evaluación
     const selectedEvaluacion: any = this.evaluaciones.find(
       evaluacion => evaluacion.evaluacion_id === Number(this.selectedEvaluacionId)
     );
@@ -80,18 +145,20 @@ export class CrearSesionComponent implements OnInit {
     if (selectedEvaluacion) {
       console.log('Evaluación seleccionada:', selectedEvaluacion);
 
-      // Accede dinámicamente a la propiedad 'bono'
-      const bono = selectedEvaluacion.bono; // No genera error porque 'selectedEvaluacion' es de tipo 'any'
+      const bono = selectedEvaluacion.bono;
+
+      console.log('Valor bono', bono);
 
       if (bono) {
         const bonoId = bono.bono_id;
 
-        // Consultar el bono usando bonoId para obtener las sesiones disponibles
         this.bonoService.getBonoById(bonoId).subscribe(
           (bonoData) => {
             console.log('Bono recibido:', bonoData);
-            this.bonoDisponible = bonoData.sesionesDisponibles > 0; // Verificar si hay sesiones disponibles
-            console.log('Bono disponible:', this.bonoDisponible);
+            console.log('Cantidad de sesiones disponibles:', bonoData.cantidad);
+
+            this.bonoDisponible = Number(bonoData.cantidad) > 0;
+            console.log('¿Bono disponible?:', this.bonoDisponible);
 
             if (!this.bonoDisponible) {
               this.errorMessage = 'No hay sesiones disponibles en el bono de esta evaluación.';
@@ -106,6 +173,8 @@ export class CrearSesionComponent implements OnInit {
             this.showErrorAlert = true;
           }
         );
+
+
       } else {
         console.error('El bono no está presente en la evaluación seleccionada.');
         this.errorMessage = 'La evaluación seleccionada no tiene un bono asociado.';
@@ -118,79 +187,98 @@ export class CrearSesionComponent implements OnInit {
     }
   }
 
+  ngOnChanges(): void {
+    if (this.sesion) {
+      console.log('Cargando datos de la sesión para edición:', this.sesion);
+
+      // Asignar los valores de la sesión al formulario
+      this.fecha = this.sesion.fecha ? new Date(this.sesion.fecha).toISOString().slice(0, 10) : ''; // Fecha en formato YYYY-MM-DD
+      this.hora = this.sesion.hora || '';
+      this.descripcion = this.sesion.descripcion || '';
+      this.tipo_sesion = this.sesion.tipo_sesion || '';
+      this.selectedEvaluacionId = this.sesion.evaluacion_fk ?? 0;
+    }
+  }
+
+
+  updateEvaluacionId(): void {
+    this.getLastSesion();
+  }
+
+
   onSubmit(): void {
-    console.log('Inicio Paciente_id:', this.pacienteId);  // Verifica si el pacienteId tiene un valor correcto
+    console.log('Inicio Paciente_id:', this.pacienteId);
+
     if (!this.pacienteId) {
       this.errorMessage = 'Paciente ID no disponible.';
       this.showErrorAlert = true;
       return;
     }
-    console.log('Paciente_id:', this.pacienteId);
-    console.log('Evaluación seleccionada ID:', this.selectedEvaluacionId);
 
-    // Verificar si la evaluación seleccionada tiene un valor
     if (!this.selectedEvaluacionId) {
       this.errorMessage = 'Debe seleccionar una evaluación válida.';
       this.showErrorAlert = true;
       return;
     }
 
-    // Buscar la evaluación seleccionada
+    if (!this.bonoDisponible) {
+      this.errorMessage = 'No hay sesiones disponibles.';
+      this.showErrorAlert = true;
+      return;
+    }
+
     const selectedEvaluacion = this.evaluaciones.find(
       evaluacion => evaluacion.evaluacion_id === Number(this.selectedEvaluacionId)
     );
 
-    if (!selectedEvaluacion) {
-      console.error('Evaluación no encontrada:', this.selectedEvaluacionId);
-      this.errorMessage = 'Debe seleccionar una evaluación válida.';
-      this.showErrorAlert = true;
-      return;
-    }
-
-    // Acceder a la propiedad 'bono' de forma segura
     const bono = (selectedEvaluacion as { bono?: any }).bono;
 
-    if (!bono) {
-      this.errorMessage = 'La evaluación seleccionada no tiene un bono asociado.';
-      this.showErrorAlert = true;
-      return;
-    }
-
-    console.log('Bono de la evaluación:', bono);
-    console.log('Bono_fk de la evaluación:', bono?.bono_id);
-
-    // Verificar si hay sesiones disponibles en el bono
-    if (!this.bonoDisponible) {
-      this.errorMessage = 'No hay sesiones disponibles en el bono de esta evaluación.';
-      this.showErrorAlert = true;
-      return;
-    }
-
-    // Crear el objeto de sesión
     const sesionData: Sesion = {
       fecha: new Date(this.fecha),
       hora: this.hora,
       descripcion: this.descripcion,
       tipo_sesion: this.tipo_sesion,
-      paciente_fk: this.pacienteId, // Asegúrate de que pacienteId tiene el valor correcto
-      n_de_sesion: this.ultimoNumeroSesion,
-      evaluacion_fk: this.selectedEvaluacionId, // ID de la evaluación seleccionada
-      bono_fk: bono?.bono_id // Accede correctamente al bono_id
+      paciente_fk: this.pacienteId,
+      n_de_sesion: this.isEditMode ? this.sesion?.n_de_sesion || 1 : this.ultimoNumeroSesion,
+      evaluacion_fk: this.selectedEvaluacionId,
+      bono_fk: bono?.bono_id,
+      sesion_id: this.isEditMode ? this.sesion?.sesion_id : undefined // Mantener el ID en caso de edición
     };
 
-    console.log('SesionData que se va a enviar:', sesionData);
-
-    // Enviar la solicitud para crear la sesión
-    this.sesionService.createSesion(sesionData).subscribe(
-      () => {
-        this.sesionCreada.emit();
-        this.showErrorAlert = false;
-      },
-      () => {
-        this.errorMessage = 'Hubo un error al crear la sesión.';
-        this.showErrorAlert = true;
+    if (this.isEditMode) {
+      if (!this.sesion?.sesion_id) {
+        console.error('Error: No se proporcionó un ID de sesión para la actualización.');
+        return;
       }
-    );
-  }
 
+      this.sesionService.updateSesion(this.sesion.sesion_id, sesionData).subscribe(
+        () => {
+          console.log('Sesión actualizada con éxito.');
+          this.sesionCreada.emit(); // Emitir evento al actualizar
+          this.showErrorAlert = false;
+        },
+        (error) => {
+          console.error('Error al actualizar la sesión:', error);
+          this.errorMessage = 'Hubo un error al actualizar la sesión.';
+          this.showErrorAlert = true;
+        }
+      );
+    }
+
+    else {
+      // Modo creación
+      console.log('Creando nueva sesión:', sesionData);
+      this.sesionService.createSesion(sesionData).subscribe(
+        () => {
+          console.log('Sesión creada con éxito.');
+          this.sesionCreada.emit();
+          this.showErrorAlert = false;
+        },
+        () => {
+          this.errorMessage = 'Hubo un error al crear la sesión.';
+          this.showErrorAlert = true;
+        }
+      );
+    }
+  }
 }

@@ -22,5 +22,18 @@ export class SesionService {
   createSesion(sesionData: Sesion): Observable<Sesion> {
     return this.http.post<Sesion>(`${this.baseUrl}`, sesionData);
   }
+
+  getSesionById(sesionId: number): Observable<Sesion> {
+    return this.http.get<Sesion>(`${this.baseUrl}/${sesionId}`);
+  }
+
+  getSesionSimple(sesionId: number): Observable<Sesion> {
+    return this.http.get<Sesion>(`${this.baseUrl}/simple/${sesionId}`);
+  }
+
+  updateSesion(id: number, sesion: Partial<Sesion>): Observable<Sesion> {
+    return this.http.patch<Sesion>(`${this.baseUrl}/${id}`, sesion);
+
+  }
 }
 
