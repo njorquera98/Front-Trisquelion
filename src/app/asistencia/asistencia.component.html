@@ -13,35 +13,7 @@
       </span>
     </label>
   </div>
-
-  <!-- Tabla de horarios -->
-  <div class="overflow-x-auto">
-    <table class="min-w-full table-auto border-collapse">
-      <thead>
-        <tr>
-          <th class="border px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Día</th>
-          <th class="border px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Horarios</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let dia of dias">
-          <td class="border px-4 py-2 font-medium text-gray-900 dark:text-white">{{ dia }}</td>
-          <td class="border px-4 py-2">
-            <div class="flex flex-wrap gap-2">
-              <button *ngFor="let hora of horarios" (click)="toggleHorario(dia, hora)"
-                [class.bg-blue-600]="asistencia[dia].includes(hora)" [class.text-white]="asistencia[dia].includes(hora)"
-                class="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 hover:bg-blue-700 hover:text-white">
-                {{ hora }}
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h2>Segunda Opcion</h2>
-  <!-- Tabla de horarios -->
+  <!--
   <div class="overflow-x-auto">
     <table class="min-w-full table-auto border-collapse">
       <thead>
@@ -54,11 +26,14 @@
         <tr *ngFor="let dia of dias">
           <td class="border px-4 py-2 font-medium text-gray-900 dark:text-white">{{ dia }}</td>
           <td class="border px-4 py-2">
-            <select class="w-full p-2 border rounded bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-white"
-              (change)="onHorarioChange(dia, $event)">
-              <option [value]="" disabled selected>Seleccionar horario</option>
-              <option *ngFor="let hora of horarios" [value]="hora">{{ hora }}</option>
-            </select>
+            <form class="max-w-sm mx-auto">
+              <select
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                (change)="onHorarioChange(dia, $event)">
+                <option [value]="" disabled selected>Seleccionar horario</option>
+                <option *ngFor="let hora of horarios" [value]="hora">{{ hora }}</option>
+              </select>
+            </form>
           </td>
         </tr>
       </tbody>
@@ -66,7 +41,6 @@
   </div>
 
 
-  <!-- Botón para guardar -->
   <div class="mt-6 text-center">
     <button
       class="px-6 py-2 bg-green-600 text-white font-medium rounded-lg shadow-md hover:bg-green-700 focus:outline-none"
@@ -74,4 +48,5 @@
       Guardar Asistencia
     </button>
   </div>
+  -->
 </div>
