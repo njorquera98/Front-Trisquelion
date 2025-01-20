@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Evaluacion } from '../models/evaluacion.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EvaluacionService {
-  private apiUrl = 'http://localhost:3000/evaluaciones'; // Asegúrate de usar la URL correcta
+  private apiUrl = `${environment.apiUrl}/evaluaciones`;
 
   constructor(private http: HttpClient) { }
 
@@ -40,6 +41,5 @@ export class EvaluacionService {
   getEvaluacionesByPaciente(pacienteId: number): Observable<Evaluacion[]> {
     return this.http.get<Evaluacion[]>(`${this.apiUrl}/paciente/${pacienteId}`);
   }
-
 }
 

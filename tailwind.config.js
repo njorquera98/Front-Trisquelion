@@ -1,11 +1,11 @@
-// tailwind.config.js utilizando ES Modules
-export default {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
-    './src/**/*.{html,ts}',
+    "./src/**/*.{html,ts}",  // Ajusta según tus rutas
   ],
   theme: {
     extend: {},
   },
   plugins: [],
-}
+};
 

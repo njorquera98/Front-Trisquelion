@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Bono } from '../models//bono.model';
+import { Bono } from '../models/bono.model';
+import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
 export class BonoService {
-  private apiUrl = 'http://localhost:3000/bonos'; // Asegúrate de que esta sea la URL correcta
+  private apiUrl = `${environment.apiUrl}/bonos`;
 
   constructor(private http: HttpClient) { }
 

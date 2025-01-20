@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment'; // Usar este archivo según el entorno
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
-  private apiUrl = 'http://localhost:3000/auth/login'; // Cambia la URL según tu backend
+  private apiUrl = `${environment.apiUrl}/auth/login`;
 
   constructor(private http: HttpClient) { }
 
@@ -24,12 +24,10 @@ export class AuthService {
   }
 
   logout(): void {
-    // Elimina el token JWT del almacenamiento local o de sesión
-    localStorage.removeItem('authToken');  // Si lo almacenas en localStorage
-    sessionStorage.removeItem('authToken');  // Si lo almacenas en sessionStorage
+    localStorage.removeItem('authToken');
+    sessionStorage.removeItem('authToken');
   }
 
-  // Agrega la lógica para verificar si el usuario está autenticado
   isAuthenticated(): boolean {
     return !!localStorage.getItem('authToken') || !!sessionStorage.getItem('authToken');
   }
