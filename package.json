@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "deploy": "mkdir -p /home/trisquel/public_html/backup_frontend && cp -r /home/trisquel/public_html/atencion.trisquelion.cl/* /home/trisquel/public_html/backup_frontend/ && ng build --configuration=production && cp /home/trisquel/public_html/backup_frontend/favicon.ico /home/trisquel/public_html/atencion.trisquelion.cl/",
+    "deploy": "ng build --configuration=production && cp -r /home/trisquel/public_html/atencion.trisquelion.cl/* /home/trisquel/public_html/backup_frontend/ && cp /home/trisquel/dist/trisquelion/browser/* /home/trisquel/public_html/atencion.trisquelion.cl/ && cp /home/trisquel/public_html/backup_frontend/favicon.ico /home/trisquel/public_html/atencion.trisquelion.cl/"
     "start:prod": "cross-env NODE_ENV=production API_URL=https://api.trisquelion.cl ng serve --configuration production"
 
   },
