@@ -82,8 +82,14 @@
           <!-- Descripción -->
           <div class="mt-4">
             <p class="font-semibold text-gray-700 dark:text-gray-300">Descripción</p>
-            <p class="text-gray-900 dark:text-white">{{ sesion.descripcion }}</p>
+            <div class="overflow-auto max-h-48">
+              <pre class="text-gray-900 dark:text-white whitespace-pre-wrap break-words flex-wrap">{{ sesion.descripcion
+                }}</pre>
+            </div>
           </div>
+
+
+
         </div>
       </div>
     </ng-container>

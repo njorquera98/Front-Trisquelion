@@ -46,17 +46,25 @@
   </div>
   <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md border border-gray-300 dark:border-gray-600">
     <p class="font-semibold text-gray-700 dark:text-gray-300">Objetivo</p>
-    <p class="text-gray-900 dark:text-white">{{ evaluacion.objetivo }}</p>
+    <div class="overflow-auto max-h-48">
+      <pre class="text-gray-900 dark:text-white whitespace-pre-wrap break-words w-full">{{ evaluacion.objetivo }}</pre>
+    </div>
   </div>
   <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md border border-gray-300 dark:border-gray-600">
     <p class="font-semibold text-gray-700 dark:text-gray-300">Diagnóstico</p>
-    <p class="text-gray-900 dark:text-white">{{ evaluacion.diagnostico }}</p>
+    <div class="overflow-auto max-h-48">
+      <pre class="text-gray-900 dark:text-white whitespace-pre-wrap break-words w-full">{{ evaluacion.diagnostico }}
+      </pre>
+    </div>
   </div>
   <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md border border-gray-300 dark:border-gray-600">
     <p class="font-semibold text-gray-700 dark:text-gray-300">Anamnesis</p>
-    <p class="text-gray-900 dark:text-white">{{ evaluacion.anamnesis }}</p>
+    <div class="overflow-auto max-h-48">
+      <pre class="text-gray-900 dark:text-white whitespace-pre-wrap break-words w-full">{{ evaluacion.anamnesis }}</pre>
+    </div>
   </div>
 </div>
+
 
 <!-- Modal -->
 <div *ngIf="mostrarModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
