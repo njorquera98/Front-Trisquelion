@@ -1,52 +1,50 @@
-<div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-  <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">Asistencia del Paciente</h2>
+<!-- asistencia.component.html -->
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+  <div class="p-6">
+    <!-- Título -->
+    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-4">
+      Asistencia de {{ diaHoy }}
+    </h2>
 
-  <!-- Toggle Activo -->
-  <div class="flex items-center justify-between mb-6">
-    <label class="inline-flex items-center cursor-pointer">
-      <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="toggleActivo" (change)="onToggleChange()">
-      <div
-        class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-      </div>
-      <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-        {{ toggleActivo ? 'Paciente Activo' : 'Paciente Inactivo'}}
-      </span>
-    </label>
+    <!-- Tabla de horarios -->
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-center">Paciente</th>
+            <th scope="col" class="px-6 py-3 text-center">Hora</th>
+            <th scope="col" class="px-6 py-3 text-center">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Recorremos los horarios -->
+          <tr *ngFor="let horario of horarios"
+            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
+              {{ horario.paciente.nombre }} {{ horario.paciente.apellido }}
+            </td>
+            <td class="px-6 py-4 text-center">
+              {{ horario.hora }}
+            </td>
+            <td class="px-6 py-4 text-center">
+              <button class="font-medium text-green-600 dark:text-green-500 hover:underline mr-5">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 11.917 9.724 16.5 19 7.5" />
+                </svg>
+              </button>
+              <button class="font-medium text-red-600 dark:text-red-500 hover:underline">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <!--
-  <div class="overflow-x-auto">
-    <table class="min-w-full table-auto border-collapse">
-      <thead>
-        <tr>
-          <th class="border px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Día</th>
-          <th class="border px-4 py-2 text-left font-semibold text-gray-700 dark:text-gray-300">Horario</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let dia of dias">
-          <td class="border px-4 py-2 font-medium text-gray-900 dark:text-white">{{ dia }}</td>
-          <td class="border px-4 py-2">
-            <form class="max-w-sm mx-auto">
-              <select
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                (change)="onHorarioChange(dia, $event)">
-                <option [value]="" disabled selected>Seleccionar horario</option>
-                <option *ngFor="let hora of horarios" [value]="hora">{{ hora }}</option>
-              </select>
-            </form>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-
-  <div class="mt-6 text-center">
-    <button
-      class="px-6 py-2 bg-green-600 text-white font-medium rounded-lg shadow-md hover:bg-green-700 focus:outline-none"
-      (click)="guardarAsistencia()">
-      Guardar Asistencia
-    </button>
-  </div>
-  -->
 </div>

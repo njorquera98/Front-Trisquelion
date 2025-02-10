@@ -4,6 +4,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ export class AppComponent implements OnInit {
   isDarkMode: boolean = false;
 
   ngOnInit() {
+    initFlowbite();
     // Cargar el tema desde el almacenamiento local, si existe
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {

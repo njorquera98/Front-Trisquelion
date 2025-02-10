@@ -9,7 +9,6 @@
     "test": "ng test",
     "deploy": "ng build --configuration=production && cp -r /home/trisquel/public_html/atencion.trisquelion.cl/* /home/trisquel/public_html/backup_frontend/ && cp /home/trisquel/dist/trisquelion/browser/* /home/trisquel/public_html/atencion.trisquelion.cl/ && cp /home/trisquel/public_html/backup_frontend/favicon.ico /home/trisquel/public_html/atencion.trisquelion.cl/",
     "start:prod": "cross-env NODE_ENV=production API_URL=https://api.trisquelion.cl ng serve --configuration production"
-
   },
   "private": true,
   "dependencies": {
@@ -23,6 +22,7 @@
     "@angular/router": "^19.0.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "dotenv": "^16.4.7",
+    "flowbite": "^3.1.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

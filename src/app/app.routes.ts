@@ -3,10 +3,12 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './services/auth.guard';
 import { PacienteComponent } from './paciente/paciente.component';
 import { ListaComponent } from './lista/lista.component';
+import { AsistenciaComponent } from './asistencia/asistencia.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'lista', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'lista', component: ListaComponent, canActivate: [AuthGuard] },
   { path: 'paciente/:id', component: PacienteComponent, canActivate: [AuthGuard] },
+  { path: 'asistencia', component: AsistenciaComponent, canActivate: [AuthGuard] },
 ];
