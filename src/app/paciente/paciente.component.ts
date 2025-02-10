@@ -10,12 +10,12 @@ import { EvaluacionComponent } from '../evaluacion/evaluacion.component';
 import { PatologiasComponent } from '../patologias/patologias.component';
 import { BonosComponent } from '../bonos/bonos.component';
 import { CrearPacienteComponent } from '../crear-paciente/crear-paciente.component';
-import { AsistenciaComponent } from '../asistencia/asistencia.component';
+import { HorarioComponent } from '../horario/horario.component';
 
 @Component({
   selector: 'app-paciente',
   standalone: true,
-  imports: [CommonModule, TabsComponent, SesionesComponent, ConsultasMedicasComponent, EvaluacionComponent, PatologiasComponent, BonosComponent, CrearPacienteComponent, AsistenciaComponent],
+  imports: [CommonModule, TabsComponent, SesionesComponent, ConsultasMedicasComponent, EvaluacionComponent, PatologiasComponent, BonosComponent, CrearPacienteComponent, HorarioComponent],
   templateUrl: './paciente.component.html',
   styleUrls: ['./paciente.component.css']
 })

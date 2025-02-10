@@ -1,0 +1,45 @@
+<div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+  <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">Asistencia del Paciente</h2>
+
+  <!-- Toggle Activo -->
+  <div class="flex items-center justify-between mb-6">
+    <label class="inline-flex items-center cursor-pointer space-x-3">
+      <input type="checkbox" class="sr-only peer" [(ngModel)]="toggleActivo" (change)="onToggleChange()">
+      <div
+        class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+      </div>
+      <span class="text-sm font-medium text-gray-900 dark:text-gray-300">
+        {{ toggleActivo ? 'Paciente Activo' : 'Paciente Inactivo'}}
+      </span>
+    </label>
+  </div>
+
+  <!-- Listado de Días y Horarios -->
+  <div class="space-y-6">
+    <div *ngFor="let dia of dias" class="flex flex-col bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow-md">
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ dia }}</h3>
+      <div class="mt-4">
+        <select
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          [(ngModel)]="asistencia[dia]" (change)="onHorarioChange(dia, $event)">
+
+          <!-- Opción de no asistir -->
+          <option [ngValue]="null">No asiste</option>
+
+          <!-- Opciones de horarios -->
+          <option *ngFor="let hora of horarios" [value]="hora">{{hora}}</option>
+
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón Guardar Asistencia -->
+  <div class="mt-6 text-center">
+    <button
+      class="px-6 py-2 bg-green-600 text-white font-medium rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
+      (click)="guardarAsistencia()">
+      Guardar Asistencia
+    </button>
+  </div>
+</div>
