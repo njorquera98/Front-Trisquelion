@@ -38,18 +38,24 @@ export class CrearBonoComponent implements OnInit {
       this.valor = this.bono.valor;
       this.folio = this.bono.folio;
       this.sesionesDisponibles = this.bono.sesionesDisponibles;
+    } else {
+      // Si no hay bono, inicializa sesionesDisponibles con un valor predeterminado
+      this.sesionesDisponibles = this.cantidad;
     }
   }
 
+
   onSubmit(): void {
     if (this.bono) {
+      // Si es edición, usamos el valor de sesionesDisponibles del bono actual
       const bonoData: Bono = {
         ...this.bono,
         paciente_fk: this.pacienteId,
         cantidad: this.cantidad,
         valor: this.valor,
         folio: this.folio,
-        sesionesDisponibles: this.sesionesDisponibles,
+        // Para editar, se toma el valor introducido o se mantiene el valor actual si no se edita
+        sesionesDisponibles: this.sesionesDisponibles !== undefined ? this.sesionesDisponibles : this.bono.sesionesDisponibles,
       };
 
       // Verificar que bono_id no sea undefined antes de llamar a updateBono
@@ -74,6 +80,7 @@ export class CrearBonoComponent implements OnInit {
         cantidad: this.cantidad,
         valor: this.valor,
         folio: this.folio,
+        // Al crear un bono, se toma la cantidad para sesionesDisponibles
         sesionesDisponibles: this.cantidad,
       };
 
@@ -88,5 +95,4 @@ export class CrearBonoComponent implements OnInit {
       );
     }
   }
-
 }
