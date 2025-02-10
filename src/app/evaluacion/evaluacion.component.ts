@@ -23,6 +23,7 @@ export class EvaluacionComponent implements OnInit {
   @Output() evaluacionCreada = new EventEmitter<Evaluacion>(); // Evento para cuando se crea una evaluación
   @Output() evaluacionEditada = new EventEmitter<Evaluacion>(); // Evento para cuando se edita una evaluación
   modo: 'crear' | 'editar' | 'evaluaciones' = 'crear'; // Propiedad 'modo' para gestionar el tipo de operación
+  ultimaEvaluacion: Evaluacion | null = null;
 
   constructor(
     private evaluacionService: EvaluacionService,
@@ -52,24 +53,33 @@ export class EvaluacionComponent implements OnInit {
   }
 
   // Abrir modal para crear, editar o ver evaluaciones pasadas
-  abrirModal(tipo: 'crear' | 'editar' | 'evaluaciones') {
+  async abrirModal(tipo: 'crear' | 'editar' | 'evaluaciones', evaluacion?: Evaluacion): Promise<void> {
     this.modalTipo = tipo;
-    this.mostrarModal = true;
+    this.ultimaEvaluacion = null; // Asegurarse de limpiar los datos previos
 
-    if (tipo === 'editar') {
-      this.modo = 'editar';
-      if (this.evaluacion) {
-        this.evaluacionSeleccionada = { ...this.evaluacion }; // Asegúrate de que la evaluación esté cargada
-      } else {
-        console.error('No hay evaluación para editar');
+    if (tipo === 'editar' && evaluacion) {
+      this.evaluacionSeleccionada = evaluacion;
+    } else if (tipo === 'crear') {
+      try {
+        // Usar el servicio para obtener la última evaluación
+        const ultimaEvaluacion = await this.evaluacionService.getUltimaEvaluacionByPaciente(this.pacienteId).toPromise();
+
+        if (ultimaEvaluacion) {
+          // Mostrar un modal o confirmación para preguntar si se desean usar los datos anteriores
+          const usarDatosAnteriores = confirm("¿Deseas usar los datos de la última evaluación?");
+          this.ultimaEvaluacion = usarDatosAnteriores ? ultimaEvaluacion : null;
+        }
+      } catch (error) {
+        console.error("Error al obtener la última evaluación", error);
+        this.ultimaEvaluacion = null;
       }
-    } else if (tipo === 'evaluaciones') {
-      this.modo = 'evaluaciones';
-      this.verEvaluacionesPasadas(); // Cargar las evaluaciones pasadas si es necesario
-    } else {
-      this.modo = 'crear';
     }
+
+    // Abrir el modal independientemente de si se usan datos anteriores o no
+    this.mostrarModal = true;
   }
+
+
 
   // Cerrar el modal
   cerrarModal(): void {

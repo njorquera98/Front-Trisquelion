@@ -47,21 +47,19 @@ export class CrearEvaluacionComponent implements OnInit {
     });
 
     // Si estamos en modo editar y se pasa una evaluación, cargarla
-    if (this.modo === 'editar' && this.evaluacion) {
+    if (this.evaluacion) {
       this.cargarDatosEvaluacion();
-    } else if (this.modo === 'crear') {
+    } else {
       this.reiniciarFormulario();
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('Changes detected:', changes);
-    if (changes['evaluacion'] && changes['evaluacion'].currentValue && this.modo === 'editar') {
+    if (changes['evaluacion'] && changes['evaluacion'].currentValue) {
       this.cargarDatosEvaluacion();
-    } else if (this.modo === 'crear') {
-      this.reiniciarFormulario();
     }
   }
+
 
   cargarDatosEvaluacion(): void {
     if (this.evaluacion) {
