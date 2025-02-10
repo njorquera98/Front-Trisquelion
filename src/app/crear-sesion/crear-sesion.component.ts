@@ -46,7 +46,6 @@ export class CrearSesionComponent implements OnInit {
 
   ngOnInit(): void {
     this.getEvaluaciones();
-    this.getLastSesion();
 
     // Determinar si estamos editando una sesión
     if (this.sesion) {
@@ -54,6 +53,7 @@ export class CrearSesionComponent implements OnInit {
       console.log('Modo edición activado:', this.sesion);
     } else {
       this.isEditMode = false;
+      this.getLastSesion();
       console.log('Modo creación activado.');
     }
   }
