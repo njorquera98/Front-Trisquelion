@@ -15,4 +15,12 @@ export class NavbarComponent {
     this.authService.logout();  // Elimina el token del almacenamiento
     this.router.navigate(['/login']);  // Redirige a la ruta de login
   }
+
+  redirigirLista(): void {
+    this.router.navigate([`/lista`]);
+  }
+
+  redirigirAsistencia(): void {
+    this.router.navigate([`/asistencia`]);
+  }
 }
