@@ -23,6 +23,9 @@ export class HorarioComponent implements OnInit {
   asistencia: { [dia: string]: string | null } = {}; // Un solo horario por día
   horariosExistentes: { [dia: string]: Horario } = {}; // Almacena los horarios en la BD
 
+  showAlertError: boolean = false;
+  showAlertSuccess: boolean = false;
+
   constructor(
     private horarioService: HorarioService,
     private pacienteService: PacienteService,
@@ -73,9 +76,15 @@ export class HorarioComponent implements OnInit {
 
   onHorarioChange(dia: string, event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
-    // Limpiar el valor para eliminar cualquier espacio extra
-    const selectedHora = selectElement.value === 'null' ? null : selectElement.value.trim();
-    this.asistencia[dia] = selectedHora;  // Asignar el valor limpio
+    let selectedHora: string | null = selectElement.value.trim();  // Permitimos que sea null también
+
+    // Verificar si la opción seleccionada es "No asiste" y establecer hora a null
+    if (selectedHora === 'null') {
+      selectedHora = null;  // Establecer null si la opción "No asiste" es seleccionada
+    }
+
+    // Asignar el valor seleccionado al objeto de asistencia
+    this.asistencia[dia] = selectedHora;
   }
 
 
@@ -87,45 +96,149 @@ export class HorarioComponent implements OnInit {
   }
 
   guardarHorarios(): void {
+    let horariosGuardadosCorrectamente = true;
+    let totalRequests = 0;
+    let completedRequests = 0;
+
     Object.entries(this.asistencia).forEach(([dia, hora]) => {
-      if (hora && hora.includes(":")) {  // Asegurarse de que sea una hora válida
-        const cleanedHora = hora.trim();  // Limpiar la hora para eliminar espacios
+      console.log(`Procesando horario para ${dia}:`, hora);
+
+      // Si la hora es "00:00:00", la consideramos como null
+      if (hora === '0: null') {
+        console.log(`Hora es "00:00:00" para ${dia}`);
+        hora = null;  // Asignamos null si es necesario
+      }
+
+      // Si la hora es null, no la procesamos más, pero la guardamos
+      if (hora === null) {
+        console.log(`Hora es null para ${dia}`);
+        // Aquí guardamos el valor null para el día correspondiente
         const horarioExistente = this.horariosExistentes[dia];
+        totalRequests++;
 
         if (horarioExistente) {
-          // Si el horario ya existe, solo lo actualizamos si la hora ha cambiado
+          // Si ya existe, lo actualizamos con null
+          this.horarioService.actualizarHorario(horarioExistente.horario_id!, { hora: null }).subscribe(
+            response => {
+              console.log(`Horario actualizado para ${dia}:`, response);
+              this.horariosExistentes[dia].hora = null;
+            },
+            error => {
+              console.error(`Error al actualizar ${dia}:`, error);
+              horariosGuardadosCorrectamente = false;
+            },
+            () => {
+              completedRequests++;
+              if (completedRequests === totalRequests) {
+                console.log('Finalizando la actualización de horarios');
+                this.mostrarAlertas(horariosGuardadosCorrectamente);
+              }
+            }
+          );
+        } else {
+          // Si no existe, lo creamos con null
+          const nuevoHorario: Horario = {
+            paciente_fk: this.pacienteId,
+            dia_semana: dia,
+            hora: null
+          };
+          console.log(`Creando nuevo horario para ${dia}:`, nuevoHorario);
+          this.horarioService.agregarHorario(nuevoHorario).subscribe(
+            response => {
+              console.log(`Horario creado para ${dia}:`, response);
+              this.horariosExistentes[dia] = response;
+            },
+            error => {
+              console.error(`Error creando ${dia}:`, error);
+              horariosGuardadosCorrectamente = false;
+            },
+            () => {
+              completedRequests++;
+              if (completedRequests === totalRequests) {
+                console.log('Finalizando la creación de horarios');
+                this.mostrarAlertas(horariosGuardadosCorrectamente);
+              }
+            }
+          );
+        }
+      } else if (hora && hora.includes(":")) {
+        // Si la hora es válida, limpiamos y procesamos normalmente
+        const cleanedHora = hora.trim();  // Limpiar espacios y asegurarse de que hora no sea null
+        console.log(`Hora limpia para ${dia}:`, cleanedHora);
+
+        const horarioExistente = this.horariosExistentes[dia];
+
+        totalRequests++;
+
+        if (horarioExistente) {
+          // Si el horario ya existe, lo actualizamos solo si la hora ha cambiado
           if (horarioExistente.hora !== cleanedHora) {
             this.horarioService.actualizarHorario(horarioExistente.horario_id!, { hora: cleanedHora }).subscribe(
               response => {
                 console.log(`Horario actualizado para ${dia}:`, response);
-                // Actualizamos en el objeto de horariosExistentes para reflejar el cambio
                 this.horariosExistentes[dia].hora = cleanedHora;
               },
-              error => console.error(`Error al actualizar ${dia}:`, error)
+              error => {
+                console.error(`Error al actualizar ${dia}:`, error);
+                horariosGuardadosCorrectamente = false;
+              },
+              () => {
+                completedRequests++;
+                if (completedRequests === totalRequests) {
+                  console.log('Finalizando la actualización de horarios');
+                  this.mostrarAlertas(horariosGuardadosCorrectamente);
+                }
+              }
             );
           }
         } else {
-          // Si el horario no existe y no es null, lo creamos
-          if (cleanedHora !== null) {
-            const nuevoHorario: Horario = {
-              paciente_fk: this.pacienteId,
-              dia_semana: dia,
-              hora: cleanedHora
-            };
-            this.horarioService.agregarHorario(nuevoHorario).subscribe(
-              response => {
-                console.log(`Horario creado para ${dia}:`, response);
-                // Guardamos el nuevo horario en horariosExistentes
-                this.horariosExistentes[dia] = response;
-              },
-              error => console.error(`Error creando ${dia}:`, error)
-            );
-          }
+          // Si el horario no existe, lo creamos con la hora válida
+          const nuevoHorario: Horario = {
+            paciente_fk: this.pacienteId,
+            dia_semana: dia,
+            hora: cleanedHora
+          };
+          console.log(`Creando nuevo horario para ${dia}:`, nuevoHorario);
+          this.horarioService.agregarHorario(nuevoHorario).subscribe(
+            response => {
+              console.log(`Horario creado para ${dia}:`, response);
+              this.horariosExistentes[dia] = response;
+            },
+            error => {
+              console.error(`Error creando ${dia}:`, error);
+              horariosGuardadosCorrectamente = false;
+            },
+            () => {
+              completedRequests++;
+              if (completedRequests === totalRequests) {
+                console.log('Finalizando la creación de horarios');
+                this.mostrarAlertas(horariosGuardadosCorrectamente);
+              }
+            }
+          );
         }
       } else {
-        console.log(`Horario no válido para ${dia}:`, hora);  // Verificar hora antes de guardar
+        console.log(`Horario no válido para ${dia}:`, hora);
+        horariosGuardadosCorrectamente = false;
+        completedRequests++;
+        if (completedRequests === totalRequests) {
+          console.log('Finalizando la verificación de horarios inválidos');
+          this.mostrarAlertas(horariosGuardadosCorrectamente);
+        }
       }
     });
+  }
+
+
+  mostrarAlertas(horariosGuardadosCorrectamente: boolean): void {
+    console.log('Mostrar alertas, ¿horarios guardados correctamente?:', horariosGuardadosCorrectamente);
+    if (horariosGuardadosCorrectamente) {
+      this.showAlertSuccess = true;
+      this.showAlertError = false; // Asegurarse de que la alerta de error se oculte si es un éxito
+    } else {
+      this.showAlertSuccess = false; // Asegurarse de que la alerta de éxito se oculte si hay un error
+      this.showAlertError = true;
+    }
   }
 
   guardarAsistencia(): void {
