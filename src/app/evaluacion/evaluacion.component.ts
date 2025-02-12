@@ -58,8 +58,12 @@ export class EvaluacionComponent implements OnInit {
     this.ultimaEvaluacion = null; // Asegurarse de limpiar los datos previos
 
     if (tipo === 'editar' && evaluacion) {
-      this.evaluacionSeleccionada = evaluacion;
-    } else if (tipo === 'crear') {
+      this.evaluacionSeleccionada = evaluacion; // Asignar la evaluación seleccionada
+      this.evaluacion = evaluacion;  // Asegúrate de que la evaluación también se asigna aquí
+      console.log('Evaluación seleccionada para editar:', evaluacion);  // Verifica que se pasa correctamente
+    }
+
+    else if (tipo === 'crear') {
       try {
         // Usar el servicio para obtener la última evaluación
         const ultimaEvaluacion = await this.evaluacionService.getUltimaEvaluacionByPaciente(this.pacienteId).toPromise();
