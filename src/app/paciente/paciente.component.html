@@ -91,6 +91,8 @@
         [pacienteId]="pacienteId"></app-consultas-medicas>
       <app-bonos *ngIf="vistaSeleccionada === 'bonos'" [pacienteId]="pacienteId"></app-bonos>
       <app-horario *ngIf="vistaSeleccionada === 'horario'"></app-horario>
+      <app-notas *ngIf="vistaSeleccionada === 'notas'"></app-notas>
+      <app-peso-maximo *ngIf="vistaSeleccionada === 'peso-maximo'"></app-peso-maximo>
     </div>
   </div>
 </div>

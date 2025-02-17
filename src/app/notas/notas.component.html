@@ -1,0 +1,25 @@
+<!-- Notas del Paciente -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mt-6">
+  <h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-4">Notas del Paciente</h2>
+  <div class="flex justify-center mt-4">
+    <button (click)="abrirModalNota()"
+      class="flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Agregar Nota
+    </button>
+  </div>
+  <div class="overflow-y-auto h-[calc(100vh-8rem)]">
+    <div *ngIf="notas.length > 0; else noNotas" class="space-y-4">
+      <div *ngFor="let nota of notas" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md border">
+        <p class="text-gray-900 dark:text-white">{{ nota.contenido }}</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Fecha: {{ nota.fechaCreacion | date }}</p>
+      </div>
+    </div>
+    <ng-template #noNotas>
+      <p class="text-gray-900 dark:text-white text-center">No hay notas registradas.</p>
+    </ng-template>
+  </div>
+</div>

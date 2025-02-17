@@ -40,7 +40,6 @@
     </li>
 
     <!-- Pestaña para Consultas Médicas -->
-    <!--
     <li class="me-2">
       <a (click)="seleccionarTab('consultas')"
         class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group">
@@ -52,10 +51,10 @@
         </svg>Consultas Médicas
       </a>
     </li>
-    -->
+
     <!-- Pestaña para Pesos Máximos -->
     <li class="me-2">
-      <a href="#"
+      <a (click)="seleccionarTab('peso-maximo')"
         class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group">
         <svg
           class="w-4 h-4 me-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300"
@@ -68,7 +67,7 @@
 
     <!-- Pestaña para Notas (Comentarios) -->
     <li>
-      <a href="#"
+      <a (click)="seleccionarTab('notas')"
         class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group">
         <svg
           class="w-4 h-4 me-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300"
