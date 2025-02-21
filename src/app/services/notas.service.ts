@@ -10,11 +10,19 @@ export class NotaService {
 
   constructor(private http: HttpClient) { }
 
-  getNotas(pacienteId: number): Observable<Nota[]> {
+  getNotasByPaciente(pacienteId: number): Observable<Nota[]> {
     return this.http.get<Nota[]>(`${this.apiUrl}/paciente/${pacienteId}`);
+  }
+
+  getNotaById(notaId: number): Observable<Nota> {
+    return this.http.get<Nota>(`${this.apiUrl}/${notaId}`);
   }
 
   addNota(nota: Nota): Observable<Nota> {
     return this.http.post<Nota>(this.apiUrl, nota);
+  }
+
+  updateNota(notaId: number, nota: Nota): Observable<Nota> {
+    return this.http.patch<Nota>(`${this.apiUrl}/${notaId}`, nota);
   }
 }
