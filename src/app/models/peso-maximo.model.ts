@@ -1,5 +1,5 @@
 export interface PesoMaximo {
-  peso_id: number;
+  peso_id?: number;
   paciente_fk: number;
   ejercicio: string;
   peso: number;

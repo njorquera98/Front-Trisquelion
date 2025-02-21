@@ -10,11 +10,15 @@ export class PesoMaximoService {
 
   constructor(private http: HttpClient) { }
 
-  getPesos(pacienteId: number): Observable<PesoMaximo[]> {
+  getPesosByPaciente(pacienteId: number): Observable<PesoMaximo[]> {
     return this.http.get<PesoMaximo[]>(`${this.apiUrl}/paciente/${pacienteId}`);
   }
 
   addPeso(peso: PesoMaximo): Observable<PesoMaximo> {
     return this.http.post<PesoMaximo>(this.apiUrl, peso);
+  }
+
+  updatePeso(pesoId: number, peso: PesoMaximo): Observable<PesoMaximo> {
+    return this.http.patch<PesoMaximo>(`${this.apiUrl}/${pesoId}`, peso);
   }
 }

@@ -3,46 +3,49 @@ import { PesoMaximo } from '../models/peso-maximo.model';
 import { PesoMaximoService } from '../services/peso-maximo.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { CrearPesoComponent } from '../crear-peso/crear-peso.component';
 
 @Component({
   selector: 'app-peso-maximo',
-  imports: [CommonModule],
+  imports: [CommonModule, CrearPesoComponent],
   templateUrl: './peso-maximo.component.html',
   styleUrl: './peso-maximo.component.css'
 })
 export class PesoMaximoComponent implements OnInit {
-  pacienteId!: number; // No es necesario @Input, ya que lo obtendremos de la ruta
-  pesosMaximos: PesoMaximo[] = [];
+  @Input() pacienteId!: number;
+  pesos: PesoMaximo[] = [];
+  mostrarModal = false;
+  pesoEnEdicion: PesoMaximo | null = null;
 
-  constructor(
-    private route: ActivatedRoute,
-    private pesoMaximoService: PesoMaximoService
-  ) { }
+  constructor(private pesoService: PesoMaximoService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    // Obtener el pacienteId desde la URL de la ruta activa
     this.pacienteId = Number(this.route.snapshot.paramMap.get('id'));
-
     if (this.pacienteId) {
-      this.obtenerPesosMaximos();
-    } else {
-      console.error('pacienteId no encontrado');
+      this.cargarPesos(this.pacienteId);
     }
   }
 
-  obtenerPesosMaximos(): void {
-    this.pesoMaximoService.getPesos(this.pacienteId).subscribe(
-      (data) => {
-        this.pesosMaximos = data;
-      },
-      (error) => {
-        console.error('Error al cargar los pesos máximos:', error);
-      }
+  cargarPesos(pacienteId: number): void {
+    this.pesoService.getPesosByPaciente(pacienteId).subscribe(
+      (pesos) => (this.pesos = pesos.reverse()),
+      (error) => console.error('Error al cargar los pesos:', error)
     );
   }
 
-  abrirModalPeso() {
-    console.log("Abrir modal de pesos máximos");
-    // Lógica para abrir el modal
+  abrirModal(peso: PesoMaximo | null = null): void {
+    this.pesoEnEdicion = peso;
+    this.mostrarModal = true;
+  }
+
+  cerrarModal(): void {
+    this.pesoEnEdicion = null;
+    this.mostrarModal = false;
+  }
+
+  manejarPesoGuardado(): void {
+    this.cerrarModal();
+    this.cargarPesos(this.pacienteId);
   }
 }
+
