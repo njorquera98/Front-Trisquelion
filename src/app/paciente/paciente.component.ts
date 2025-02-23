@@ -7,7 +7,6 @@ import { TabsComponent } from '../tabs/tabs.component';
 import { SesionesComponent } from '../sesiones/sesiones.component';
 import { ConsultasMedicasComponent } from '../consultas-medicas/consultas-medicas.component';
 import { EvaluacionComponent } from '../evaluacion/evaluacion.component';
-import { PatologiasComponent } from '../patologias/patologias.component';
 import { BonosComponent } from '../bonos/bonos.component';
 import { CrearPacienteComponent } from '../crear-paciente/crear-paciente.component';
 import { HorarioComponent } from '../horario/horario.component';
@@ -23,7 +22,6 @@ import { NotasComponent } from '../notas/notas.component';
     SesionesComponent,
     ConsultasMedicasComponent,
     EvaluacionComponent,
-    PatologiasComponent,
     BonosComponent,
     CrearPacienteComponent,
     HorarioComponent,
