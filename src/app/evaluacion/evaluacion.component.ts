@@ -44,13 +44,21 @@ export class EvaluacionComponent implements OnInit {
   getLastEvaluacion(): void {
     this.evaluacionService.getUltimaEvaluacionByPaciente(this.pacienteId).subscribe(
       (data) => {
-        this.evaluacion = data;
+        if (data) {
+          this.evaluacion = data;
+        } else {
+          // Si no se encuentra evaluación, establece la evaluación como null
+          console.log('Este paciente no tiene evaluaciones previas.');
+          this.evaluacion = null;
+        }
       },
       (error) => {
         console.error('Error al obtener la última evaluación:', error);
+        this.evaluacion = null; // Si hay un error inesperado, también establecemos la evaluación como null
       }
     );
   }
+
 
   // Abrir modal para crear, editar o ver evaluaciones pasadas
   async abrirModal(tipo: 'crear' | 'editar' | 'evaluaciones', evaluacion?: Evaluacion): Promise<void> {
