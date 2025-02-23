@@ -1,5 +1,5 @@
 <form (ngSubmit)="guardar()">
-  <div class="grid gap-4 mb-4 sm:grid-cols-2">
+  <div class="grid gap-4 mb-4 sm:grid-cols-3">
     <!-- Fecha -->
     <div>
       <label for="fecha" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha</label>
@@ -21,19 +21,18 @@
       <label for="tipoConsulta" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
         Tipo de Consulta
       </label>
-      <input type="text" id="tipoConsulta" name="tipoConsulta" [(ngModel)]="nuevaConsulta.tipoConsulta"
+      <select id="tipoConsulta" name="tipoConsulta" [(ngModel)]="nuevaConsulta.tipoConsulta"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
         required>
+        <option value="" disabled selected>Seleccione un tipo</option>
+        <option value="Primer Consulta">Primera Consulta</option>
+        <option value="Control">Control</option>
+        <option value="Seguimiento">Seguimiento</option>
+        <option value="Otros">Otros</option>
+      </select>
     </div>
-    <select id="tipoConsulta" name="tipoConsulta" [(ngModel)]="nuevaConsulta.tipoConsulta"
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-      required>
-      <option value="" disabled selected>Seleccione un tipo</option>
-      <option value="Primer Consulta">Primera Consulta</option>
-      <option value="Control">Control</option>
-      <option value="Seguimiento">Seguimiento</option>
-      <option value="Otros">Otros</option>
-    </select>
+  </div>
+  <div class="grid gap-4 mb-4 ">
     <!-- Motivo -->
     <div class="sm:col-span-2">
       <label for="motivo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Motivo</label>
@@ -49,6 +48,16 @@
         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
         placeholder="Escriba los síntomas aquí" required></textarea>
     </div>
+
+    <!-- Síntomas -->
+    <div class="sm:col-span-2">
+      <label for="diagnostico" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Diagnostico</label>
+      <textarea id="diagnostico" name="diagnostico" rows="3" [(ngModel)]="nuevaConsulta.diagnostico"
+        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        placeholder="Escriba el diagnostico aquí" required></textarea>
+    </div>
+
+
   </div>
 
   <!-- Botón de Guardar -->

@@ -13,8 +13,7 @@ export class CrearConsultasComponent {
   @Output() consultaGuardada = new EventEmitter<Consulta>();
   @Output() modalCerrado = new EventEmitter<void>();
 
-  nuevaConsulta: Consulta = { fecha: '', hora: '', tipoConsulta: '', motivo: '', sintomas: '', paciente_fk: 0 };
-
+  nuevaConsulta: Consulta = { fecha: '', hora: '', tipoConsulta: '', motivo: '', sintomas: '', diagnostico: '', paciente_fk: 0 };
 
   ngOnInit(): void {
     console.log('Consulta recibida en modal:', this.consulta);

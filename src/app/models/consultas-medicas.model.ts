@@ -5,5 +5,6 @@ export interface Consulta {
   motivo: string;
   sintomas: string;
   tipoConsulta: string;
+  diagnostico: string;
   paciente_fk: number;
 }
