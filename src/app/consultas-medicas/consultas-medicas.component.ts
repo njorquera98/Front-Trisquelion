@@ -90,5 +90,12 @@ export class ConsultasMedicasComponent implements OnInit {
     this.consultaEnEdicion = null;
     this.editandoConsulta = false;
   }
+  getMedicoNombre(consulta: Consulta): string {
+    if (typeof consulta.medico === 'object' && consulta.medico !== null) {
+      return `${consulta.medico.nombre} ${consulta.medico.apellido}`;
+    }
+    return 'No registrado';
+  }
+
 }
 
