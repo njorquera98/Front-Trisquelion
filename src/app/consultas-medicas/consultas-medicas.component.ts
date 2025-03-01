@@ -5,6 +5,7 @@ import { ConsultaService } from '../services/consultas-medicas.service';
 import { CrearConsultasComponent } from '../crear-consultas/crear-consultas.component';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { DocumentoService } from '../services/documento.service';
 
 @Component({
   selector: 'app-consultas-medicas',
@@ -25,6 +26,7 @@ export class ConsultasMedicasComponent implements OnInit {
 
   constructor(
     private consultaService: ConsultaService,
+    private documentoService: DocumentoService,
     private route: ActivatedRoute,
   ) { }
 
@@ -41,7 +43,7 @@ export class ConsultasMedicasComponent implements OnInit {
   fetchConsultas(): void {
     this.consultaService.getConsultasByPaciente(this.pacienteId).subscribe(
       (data) => {
-        this.consultas = data;
+        this.consultas = data.reverse();
         this.isLoading = false;
         console.log('Consultas cargadas:', data);
       },
@@ -95,6 +97,22 @@ export class ConsultasMedicasComponent implements OnInit {
       return `${consulta.medico.nombre} ${consulta.medico.apellido}`;
     }
     return 'No registrado';
+  }
+
+  generarDocumento(consulta_id: number | undefined): void {
+    if (consulta_id !== undefined) {
+      this.documentoService.crearDocumento(consulta_id).subscribe(
+        (response) => {
+          console.log('Documento creado con éxito:', response);
+        },
+        (error) => {
+          console.error('Error al crear documento:', error);
+        }
+      );
+      console.log('Consulta seleccionada con ID:', consulta_id);
+    } else {
+      console.error('Error: ID de consulta no está definido');
+    }
   }
 
 }

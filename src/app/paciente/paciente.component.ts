@@ -12,6 +12,7 @@ import { CrearPacienteComponent } from '../crear-paciente/crear-paciente.compone
 import { HorarioComponent } from '../horario/horario.component';
 import { PesoMaximoComponent } from '../peso-maximo/peso-maximo.component';
 import { NotasComponent } from '../notas/notas.component';
+import { OrdenMedicaComponent } from '../orden-medica/orden-medica.component';
 
 @Component({
   selector: 'app-paciente',
@@ -26,7 +27,9 @@ import { NotasComponent } from '../notas/notas.component';
     CrearPacienteComponent,
     HorarioComponent,
     PesoMaximoComponent,
-    NotasComponent],
+    NotasComponent,
+    OrdenMedicaComponent,
+  ],
   templateUrl: './paciente.component.html',
   styleUrls: ['./paciente.component.css']
 })
