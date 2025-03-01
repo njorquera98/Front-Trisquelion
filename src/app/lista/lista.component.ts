@@ -14,8 +14,10 @@ import { CrearPacienteComponent } from '../crear-paciente/crear-paciente.compone
 })
 export class ListaComponent {
   pacientes: Paciente[] = [];
+  pacientesFiltrados: Paciente[] = []; // Lista para mostrar los pacientes filtrados
   toggleActivo: boolean = true;
   mostrarModal: boolean = false;  // Controla la visibilidad del modal
+  searchTerm: string = ''; // Almacena el término de búsqueda
 
   constructor(private pacienteService: PacienteService, private router: Router) { }
 
@@ -32,6 +34,7 @@ export class ListaComponent {
     serviceMethod.subscribe({
       next: (data) => {
         this.pacientes = data;
+        this.filtrarPacientes(); // Filtrar pacientes cuando los datos se cargan
       },
       error: (err) => {
         console.error('Error al obtener pacientes:', err);
@@ -41,8 +44,25 @@ export class ListaComponent {
 
   // Método que se ejecuta cuando se cambia el toggle
   onToggleChange(): void {
-    console.log('Toggle cambiado:', this.toggleActivo);
     this.cargarPacientes();  // Recargar pacientes según el toggle
+  }
+
+  // Método para filtrar pacientes según el término de búsqueda
+  filtrarPacientes(): void {
+    if (this.searchTerm) {
+      this.pacientesFiltrados = this.pacientes.filter(paciente =>
+        paciente.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        paciente.apellido.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        paciente.telefono.includes(this.searchTerm)
+      );
+    } else {
+      this.pacientesFiltrados = [...this.pacientes]; // Si no hay búsqueda, mostrar todos
+    }
+  }
+
+  // Método que se ejecuta cuando el usuario ingresa texto en el input
+  onSearch(): void {
+    this.filtrarPacientes();
   }
 
   // Método para abrir el modal en modo creación
@@ -59,6 +79,9 @@ export class ListaComponent {
   onPacienteGuardado(paciente: Paciente): void {
     // Agregar el nuevo paciente al inicio de la lista
     this.pacientes = [paciente, ...this.pacientes];
+
+    // Filtrar nuevamente después de agregar el nuevo paciente
+    this.filtrarPacientes();
 
     // Cerrar el modal
     this.cerrarModal();
@@ -81,3 +104,4 @@ export class ListaComponent {
     });
   }
 }
+
