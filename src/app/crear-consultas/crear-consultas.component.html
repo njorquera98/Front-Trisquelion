@@ -2,27 +2,27 @@
   <div class="grid gap-4 mb-4 sm:grid-cols-2">
     <!-- Fecha -->
     <div>
-      <label for="fecha" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha</label>
+      <label for="fecha" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Fecha</label>
       <input type="date" id="fecha" name="fecha" [(ngModel)]="nuevaConsulta.fecha"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
     </div>
 
     <!-- Hora -->
     <div>
-      <label for="hora" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hora</label>
+      <label for="hora" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Hora</label>
       <input type="time" id="hora" name="hora" [(ngModel)]="nuevaConsulta.hora"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
     </div>
 
     <!-- Tipo de Consulta -->
     <div>
-      <label for="tipoConsulta" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+      <label for="tipoConsulta" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">
         Tipo de Consulta
       </label>
       <select id="tipoConsulta" name="tipoConsulta" [(ngModel)]="nuevaConsulta.tipoConsulta"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
         <option value="" disabled selected>Seleccione un tipo</option>
         <option value="Primer Consulta">Primera Consulta</option>
@@ -34,11 +34,11 @@
 
     <!-- Médico -->
     <div>
-      <label for="medico" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+      <label for="medico" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">
         Médico
       </label>
       <select id="medico" name="medico" [(ngModel)]="nuevaConsulta.medico"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
         <option value="" disabled selected>Seleccione un tipo</option>
         <option *ngFor="let medico of medicos" [ngValue]="medico.medico_id">
@@ -50,25 +50,26 @@
   <div class="grid gap-4 mb-4 ">
     <!-- Motivo -->
     <div class="sm:col-span-2">
-      <label for="motivo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Motivo</label>
+      <label for="motivo" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Motivo</label>
       <textarea id="motivo" name="motivo" rows="2" [(ngModel)]="nuevaConsulta.motivo"
-        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="block p-2.5 w-full text-sm text-neutral-900 bg-neutral-50 rounded-lg border border-neutral-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         placeholder="Escriba el motivo aquí" required></textarea>
     </div>
 
     <!-- Síntomas -->
     <div class="sm:col-span-2">
-      <label for="sintomas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Síntomas</label>
+      <label for="sintomas" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Síntomas</label>
       <textarea id="sintomas" name="sintomas" rows="3" [(ngModel)]="nuevaConsulta.sintomas"
-        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="block p-2.5 w-full text-sm text-neutral-900 bg-neutral-50 rounded-lg border border-neutral-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         placeholder="Escriba los síntomas aquí" required></textarea>
     </div>
 
     <!-- Síntomas -->
     <div class="sm:col-span-2">
-      <label for="diagnostico" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Diagnostico</label>
+      <label for="diagnostico"
+        class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Diagnostico</label>
       <textarea id="diagnostico" name="diagnostico" rows="3" [(ngModel)]="nuevaConsulta.diagnostico"
-        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="block p-2.5 w-full text-sm text-neutral-900 bg-neutral-50 rounded-lg border border-neutral-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         placeholder="Escriba el diagnostico aquí" required></textarea>
     </div>
 

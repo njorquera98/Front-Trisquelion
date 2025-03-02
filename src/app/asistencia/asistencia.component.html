@@ -1,15 +1,15 @@
 <!-- asistencia.component.html -->
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg dark:bg-neutral-800">
   <div class="p-6">
     <!-- Título -->
-    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-4">
+    <h2 class="text-2xl font-semibold text-neutral-900 dark:text-white text-center mb-4">
       Asistencia de {{ diaHoy }}
     </h2>
 
     <!-- Tabla de horarios -->
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table class="w-full text-sm text-left rtl:text-right text-neutral-500 dark:text-neutral-400">
+        <thead class="text-xs text-neutral-700 uppercase bg-neutral-50 dark:bg-neutral-700 dark:text-neutral-400">
           <tr>
             <th scope="col" class="px-6 py-3 text-center">Paciente</th>
             <th scope="col" class="px-6 py-3 text-center">Hora</th>
@@ -19,8 +19,8 @@
         <tbody>
           <!-- Recorremos los horarios -->
           <tr *ngFor="let horario of horarios"
-            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
+            class="odd:bg-white odd:dark:bg-neutral-900 even:bg-neutral-50 even:dark:bg-neutral-800 border-b dark:border-neutral-700">
+            <td class="px-6 py-4 font-medium text-neutral-900 whitespace-nowrap dark:text-white text-center">
               {{ horario.paciente.nombre }} {{ horario.paciente.apellido }}
             </td>
             <td class="px-6 py-4 text-center">
@@ -28,15 +28,15 @@
             </td>
             <td class="px-6 py-4 text-center">
               <button class="font-medium text-green-600 dark:text-green-500 hover:underline mr-5">
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                  width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 text-neutral-800 dark:text-white" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M5 11.917 9.724 16.5 19 7.5" />
                 </svg>
               </button>
               <button class="font-medium text-red-600 dark:text-red-500 hover:underline">
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                  width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 text-neutral-800 dark:text-white" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M6 18L18 6M6 6l12 12" />
                 </svg>

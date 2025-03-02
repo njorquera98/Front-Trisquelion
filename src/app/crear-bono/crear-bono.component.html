@@ -1,33 +1,33 @@
 <form (ngSubmit)="onSubmit()">
   <div class="grid gap-4 mb-4 sm:grid-cols-2">
     <div>
-      <label for="cantidad" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cantidad</label>
+      <label for="cantidad" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Cantidad</label>
       <input type="text" id="cantidad" name="cantidad" [(ngModel)]="cantidad"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
     </div>
     <div>
-      <label for="valor" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valor</label>
+      <label for="valor" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Valor</label>
       <input type="text" id="valor" name="valor" [(ngModel)]="valor"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
     </div>
   </div>
 
   <div class="grid gap-4 mb-4 sm:grid-cols-2">
     <div>
-      <label for="folio" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Folio</label>
+      <label for="folio" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Folio</label>
       <input type="text" id="folio" name="folio" [(ngModel)]="folio"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
     </div>
 
     <!-- Mostrar sesionesDisponibles solo si estamos en modo edición -->
     <div *ngIf="bono && bono.bono_id !== undefined">
-      <label for="sesionesDisponibles" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sesiones
+      <label for="sesionesDisponibles" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Sesiones
         Disponibles</label>
       <input type="number" id="sesionesDisponibles" name="sesionesDisponibles" [(ngModel)]="sesionesDisponibles"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
     </div>
   </div>

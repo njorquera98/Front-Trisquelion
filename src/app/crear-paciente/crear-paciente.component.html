@@ -1,52 +1,52 @@
 <form (ngSubmit)="onSubmit()">
   <div class="grid gap-4 mb-4 sm:grid-cols-2">
     <div>
-      <label for="nombre" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+      <label for="nombre" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Nombre</label>
       <input type="text" id="nombre" [(ngModel)]="formulario.nombre" name="nombre"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         placeholder="Ingrese el nombre" required>
     </div>
 
     <div>
-      <label for="apellido" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apellido</label>
+      <label for="apellido" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Apellido</label>
       <input type="text" id="apellido" [(ngModel)]="formulario.apellido" name="apellido"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         placeholder="Ingrese el apellido" required>
     </div>
 
     <div>
-      <label for="rut" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">RUT</label>
+      <label for="rut" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">RUT</label>
       <input type="text" id="rut" [(ngModel)]="formulario.rut" name="rut"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         placeholder="Ingrese el RUT" required>
     </div>
 
     <div>
-      <label for="telefono" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Teléfono</label>
+      <label for="telefono" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Teléfono</label>
       <input type="text" id="telefono" [(ngModel)]="formulario.telefono" name="telefono"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         placeholder="Ingrese el teléfono" required>
     </div>
 
     <div>
-      <label for="correo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo</label>
+      <label for="correo" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Correo</label>
       <input type="email" id="correo" [(ngModel)]="formulario.correo" name="correo"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         placeholder="Ingrese el correo" required>
     </div>
 
     <div>
-      <label for="fechaNacimiento" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha de
+      <label for="fechaNacimiento" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Fecha de
         Nacimiento</label>
       <input type="date" id="fechaNacimiento" [(ngModel)]="formulario.fechaNacimiento" name="fechaNacimiento"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
     </div>
 
     <div>
-      <label for="prevision" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Previsión</label>
+      <label for="prevision" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Previsión</label>
       <select id="prevision" [(ngModel)]="formulario.prevision" name="prevision"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
         <option value="" disabled selected>Seleccione una previsión</option>
         <option value="Fonasa">Fonasa</option>
@@ -60,9 +60,9 @@
     </div>
 
     <div>
-      <label for="domicilio" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Domicilio</label>
+      <label for="domicilio" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Domicilio</label>
       <input type="text" id="domicilio" [(ngModel)]="formulario.domicilio" name="domicilio"
-        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="block p-2.5 w-full text-sm text-neutral-900 bg-neutral-50 rounded-lg border border-neutral-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         placeholder="Ingrese el domicilio" required>
     </div>
   </div>
