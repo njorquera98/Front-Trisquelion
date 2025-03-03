@@ -3,6 +3,7 @@ import { DocumentoService } from '../services/documento.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Documento } from '../models/documento.model';
+import { EmailService } from '../services/email.service';
 
 @Component({
   selector: 'app-orden-medica',
@@ -16,6 +17,7 @@ export class OrdenMedicaComponent {
 
   constructor(
     private documentoService: DocumentoService,
+    private emailService: EmailService,
     private route: ActivatedRoute
   ) { }
 
@@ -54,6 +56,20 @@ export class OrdenMedicaComponent {
       },
       (error) => {
         console.error('Error al descargar el PDF:', error);
+      }
+    );
+  }
+
+  enviarCorreo(codigoValidacion: string): void {
+    console.log(`Enviando correo con código de validación: ${codigoValidacion}`);
+
+    this.emailService.enviarDocumento(codigoValidacion).subscribe(
+      (response) => {
+        alert('Correo enviado exitosamente');
+      },
+      (error) => {
+        console.error('Error al enviar el correo', error);
+        alert('Error al enviar el correo');
       }
     );
   }
