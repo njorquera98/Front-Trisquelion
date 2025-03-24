@@ -1,13 +1,33 @@
-<!-- asistencia.component.html -->
 <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg dark:bg-neutral-800">
   <div class="p-6">
     <!-- Título -->
     <h2 class="text-2xl font-semibold text-neutral-900 dark:text-white text-center mb-4">
-      Asistencia de {{ diaHoy }}
+      Hoy {{ diaHoy }}
     </h2>
 
+    <!-- Mostrar la fecha seleccionada -->
+    <div *ngIf="fechaSeleccionada" class="mb-4">
+      <p class="text-center text-lg">Fecha seleccionada: {{ fechaSeleccionada }}</p>
+    </div>
+
+    <!-- Selector de fecha -->
+    <div class="flex justify-center mb-4">
+      <div class="relative max-w-sm">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+          <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-400" aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+          </svg>
+        </div>
+        <!-- Input de tipo date -->
+        <input id="datepicker-format" type="date" [(ngModel)]="fechaSeleccionada" (change)="onFechaChange()"
+          class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+      </div>
+    </div>
+
     <!-- Tabla de horarios -->
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg" *ngIf="horarios.length > 0">
       <table class="w-full text-sm text-left rtl:text-right text-neutral-500 dark:text-neutral-400">
         <thead class="text-xs text-neutral-700 uppercase bg-neutral-50 dark:bg-neutral-700 dark:text-neutral-400">
           <tr>
@@ -45,6 +65,10 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <div *ngIf="horarios.length === 0" class="text-center text-neutral-500 dark:text-neutral-400">
+      No hay pacientes para esta fecha.
     </div>
   </div>
 </div>

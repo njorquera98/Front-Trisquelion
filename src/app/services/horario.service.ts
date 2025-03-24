@@ -16,9 +16,8 @@ export class HorarioService {
     return this.http.get<Horario[]>(`${this.apiUrl}/paciente/${pacienteId}`);
   }
 
-  // Método para obtener los horarios de hoy
-  obtenerHorariosDeHoy(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/`);
+  getHorariosPorFecha(fecha: string): Observable<Horario[]> {
+    return this.http.get<Horario[]>(`http://localhost:3000/horario/fecha/${fecha}`);
   }
 
   // Agregar un horario

@@ -55,7 +55,7 @@
               "optimization": false
             }
           },
-          "defaultConfiguration": "development"  // Cambiado a "development"
+          "defaultConfiguration": "production"  // Cambiado a "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",

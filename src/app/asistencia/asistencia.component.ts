@@ -12,38 +12,50 @@ import { HorarioService } from '../services/horario.service';
 export class AsistenciaComponent implements OnInit {
   horarios: any[] = [];
   diaHoy: string = '';
+  fechaSeleccionada: string = '';
 
   constructor(private horarioService: HorarioService) { }
 
   ngOnInit(): void {
-    this.cargarHorariosDeHoy();
-    this.obtenerDiaDeHoy();
+    this.obtenerFechaHoy();
+    this.cargarHorariosDeFecha();  // Cargar horarios al inicio con la fecha actual
   }
 
-  cargarHorariosDeHoy(): void {
-    this.horarioService.obtenerHorariosDeHoy().subscribe((horarios) => {
-      // Ordenar los horarios por hora
-      this.horarios = horarios.sort((a, b) => {
-        const horaA = a.hora.split(':').join('');
-        const horaB = b.hora.split(':').join('');
-        return horaA > horaB ? 1 : horaA < horaB ? -1 : 0;
-      });
-      console.log('Horarios de hoy:', this.horarios);
-    });
-  }
-
-  obtenerDiaDeHoy(): void {
+  obtenerFechaHoy(): void {
     const fechaHoy = new Date();
-    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    const meses = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto',
-      'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ];
 
-    const dia = fechaHoy.getDate();
-    const mes = meses[fechaHoy.getMonth()];
+    // Usar 'toLocaleDateString' para mostrar la fecha completa
+    const opciones: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    this.diaHoy = fechaHoy.toLocaleDateString('es-ES', opciones);
+
+    // Formatear la fecha como dd-MM-yyyy para el input de tipo date
+    const dia = fechaHoy.getDate().toString().padStart(2, '0');
+    const mes = (fechaHoy.getMonth() + 1).toString().padStart(2, '0');
     const año = fechaHoy.getFullYear();
 
-    this.diaHoy = `${diasSemana[fechaHoy.getDay()]} ${dia} de ${mes} de ${año}`;
+    this.fechaSeleccionada = `${dia}-${mes}-${año}`; // Formato dd-MM-yyyy
   }
+
+  cargarHorariosDeFecha(): void {
+    if (this.fechaSeleccionada) {
+      this.horarioService.getHorariosPorFecha(this.fechaSeleccionada).subscribe((horarios: any[]) => {
+        this.horarios = horarios.sort((a, b) => a.hora.localeCompare(b.hora));
+        console.log(`Horarios para ${this.fechaSeleccionada}:`, this.horarios);
+      });
+    }
+  }
+
+  // Método para manejar el cambio de fecha en el input
+  onFechaChange(): void {
+    if (this.fechaSeleccionada) {
+      // La fecha viene en formato YYYY-MM-DD, y la convertimos a dd-MM-yyyy
+      const [anio, mes, dia] = this.fechaSeleccionada.split('-');
+
+      // Convertir a formato dd-MM-yyyy
+      this.fechaSeleccionada = `${dia}-${mes}-${anio}`;
+
+      this.cargarHorariosDeFecha();
+    }
+  }
+
 }
