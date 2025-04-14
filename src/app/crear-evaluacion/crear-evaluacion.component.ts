@@ -14,11 +14,11 @@ import { Bono } from '../models/bono.model';
 })
 export class CrearEvaluacionComponent implements OnInit {
   @Input() pacienteId!: number;
-  @Input() evaluacion: Evaluacion | null = null; // Evaluación para edición
-  @Input() modo: 'crear' | 'editar' | 'evaluaciones' = 'crear'; // Modo de operación: crear, editar o ver evaluaciones
-  @Output() evaluacionGuardada = new EventEmitter<Evaluacion>(); // Evento para guardar evaluación
-  @Output() cerrarModal = new EventEmitter<void>(); // Evento para cerrar modal
+  @Input() evaluacion: Evaluacion | null = null;
+  @Input() modo: 'crear' | 'editar' | 'evaluaciones' = 'crear';
 
+  @Output() evaluacionGuardada = new EventEmitter<Evaluacion>();
+  @Output() cerrarModal = new EventEmitter<void>();
   @Output() evaluacionCreada = new EventEmitter<Evaluacion>();
   @Output() evaluacionEditada = new EventEmitter<Evaluacion>();
 
@@ -36,49 +36,43 @@ export class CrearEvaluacionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Si no se pasa un paciente ID, lo obtenemos desde la ruta
     if (!this.pacienteId) {
       this.pacienteId = Number(this.route.snapshot.paramMap.get('id'));
     }
 
-    // Cargar los bonos del paciente
     this.bonosService.getFoliosByPaciente(this.pacienteId).subscribe(bonos => {
       this.bonos = bonos;
     });
 
-    // Si estamos en modo editar y se pasa una evaluación, cargarla
     if (this.modo === 'editar' && this.evaluacion) {
-      console.log('Cargando datos de evaluación en OnInit:', this.evaluacion);
-      this.cargarDatosEvaluacion(); // Llamar a cargarDatosEvaluacion solo si estamos en modo editar
+      console.log('ngOnInit cargando evaluación');
+      this.cargarDatosEvaluacion();
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Verifica que el cambio de 'evaluacion' se haya detectado correctamente
-    if (changes['evaluacion'] && changes['evaluacion'].currentValue) {
-      console.log('Evaluación recibida en ngOnChanges:', changes['evaluacion'].currentValue);
-      this.cargarDatosEvaluacion();  // Solo carga los datos si la evaluación ha cambiado
+    console.log('ngOnChanges detectado:', changes);
+
+    if (
+      changes['evaluacion'] &&
+      changes['evaluacion'].currentValue &&
+      this.modo === 'editar'
+    ) {
+      console.log('ngOnChanges: evaluación actualizada, recargando datos');
+      this.cargarDatosEvaluacion();
     }
   }
 
-
   cargarDatosEvaluacion(): void {
     if (this.evaluacion) {
-      console.log('Evaluación cargada:', this.evaluacion);
+      console.log('Cargando evaluación:', this.evaluacion);
+
       this.objetivo = this.evaluacion.objetivo || '';
       this.diagnostico = this.evaluacion.diagnostico || '';
       this.anamnesis = this.evaluacion.anamnesis || '';
 
-      // Verificar si existe bono y bono_id
-      if (this.evaluacion.bono && this.evaluacion.bono.bono_id) {
-        this.bono_fk = this.evaluacion.bono.bono_id; // Ahora bono_id está garantizado
-        console.log('bono_fk:', this.bono_fk);
-      } else {
-        this.bono_fk = 0; // Si no existe bono, lo asignamos a 0 o un valor predeterminado
-        console.log('No se encontró bono');
-      }
+      this.bono_fk = this.evaluacion.bono?.bono_id ?? 0;
 
-      // Conversión de fecha
       if (typeof this.evaluacion.fechaIngreso === 'string') {
         this.fechaIngreso = new Date(this.evaluacion.fechaIngreso).toISOString().split('T')[0];
       } else if (this.evaluacion.fechaIngreso instanceof Date) {
@@ -90,7 +84,6 @@ export class CrearEvaluacionComponent implements OnInit {
   }
 
   reiniciarFormulario(): void {
-    // Reiniciar los campos del formulario
     this.objetivo = '';
     this.diagnostico = '';
     this.anamnesis = '';
@@ -99,27 +92,19 @@ export class CrearEvaluacionComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log('Evaluación guardada antes de emitir:', {
-      ...this.evaluacion,
-      objetivo: this.objetivo,
-      diagnostico: this.diagnostico,
-      anamnesis: this.anamnesis,
-      fechaIngreso: new Date(this.fechaIngreso),
-      paciente_fk: this.pacienteId,
-      bono_fk: this.bono_fk
-    });
+    const bonoSeleccionado = this.bonos.find(b => b.bono_id === Number(this.bono_fk)) || undefined;
 
     const evaluacionGuardada: Evaluacion = {
-      ...(this.evaluacion ? { ...this.evaluacion } : {}), // Copia solo si hay evaluación previa
+      ...(this.evaluacion ? { ...this.evaluacion } : {}),
       objetivo: this.objetivo,
       diagnostico: this.diagnostico,
       anamnesis: this.anamnesis,
       fechaIngreso: new Date(this.fechaIngreso),
       paciente_fk: this.pacienteId,
-      bono_fk: this.bono_fk
+      bono_fk: Number(this.bono_fk),
+      bono: bonoSeleccionado  // <--- fuerza actualización del bono
     };
 
-    // Si estamos creando una nueva evaluación, asegurarnos de eliminar el evaluacion_id
     if (this.modo === 'crear') {
       delete (evaluacionGuardada as any).evaluacion_id;
     }
@@ -133,8 +118,8 @@ export class CrearEvaluacionComponent implements OnInit {
     }
   }
 
+
   cerrarModalFunc(): void {
-    // Emitir el evento para cerrar el modal
     this.cerrarModal.emit();
   }
 }
