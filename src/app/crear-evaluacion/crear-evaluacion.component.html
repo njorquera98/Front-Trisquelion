@@ -35,7 +35,7 @@
       <select id="bono" [(ngModel)]="bono_fk" name="bono_fk"
         class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
         required>
-        <option *ngFor="let bono of bonos" [value]="bono.bono_id">{{ bono.folio }}</option>
+        <option *ngFor="let bono of bonos" [value]="bono.bono_id">Folio: {{ bono.folio }} - Sesiones: {{ bono.sesionesDisponibles}}</option>
       </select>
     </div>
   </div>

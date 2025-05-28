@@ -41,14 +41,16 @@ export class CrearEvaluacionComponent implements OnInit {
     }
 
     this.bonosService.getFoliosByPaciente(this.pacienteId).subscribe(bonos => {
-      this.bonos = bonos;
+      this.bonos = bonos.filter(bono => bono.sesionesDisponibles > 0);
+      console.log('Bonos con sesiones disponibles:', this.bonos);
     });
 
-    if (this.modo === 'editar' && this.evaluacion) {
-      console.log('ngOnInit cargando evaluación');
+    if ((this.modo === 'editar' || this.modo === 'crear') && this.evaluacion) {
+      console.log('ngOnInit cargando evaluación en modo:', this.modo);
       this.cargarDatosEvaluacion();
     }
   }
+
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log('ngOnChanges detectado:', changes);
@@ -56,12 +58,13 @@ export class CrearEvaluacionComponent implements OnInit {
     if (
       changes['evaluacion'] &&
       changes['evaluacion'].currentValue &&
-      this.modo === 'editar'
+      (this.modo === 'editar' || this.modo === 'crear')
     ) {
-      console.log('ngOnChanges: evaluación actualizada, recargando datos');
+      console.log('ngOnChanges: evaluación actualizada en modo:', this.modo);
       this.cargarDatosEvaluacion();
     }
   }
+
 
   cargarDatosEvaluacion(): void {
     if (this.evaluacion) {
