@@ -16,8 +16,8 @@ export class HorarioService {
     return this.http.get<Horario[]>(`${this.apiUrl}/paciente/${pacienteId}`);
   }
 
-  getHorariosPorFecha(fecha: string): Observable<Horario[]> {
-    return this.http.get<Horario[]>(`${this.apiUrl}/fecha/${fecha}`);
+  getHorariosPorSemana(): Observable<any> {
+    return this.http.get<Horario[]>(`${this.apiUrl}/fecha`);
   }
 
   // Agregar un horario

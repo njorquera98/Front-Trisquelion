@@ -1,74 +1,61 @@
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg dark:bg-neutral-800">
-  <div class="p-6">
-    <!-- Título -->
-    <h2 class="text-2xl font-semibold text-neutral-900 dark:text-white text-center mb-4">
-      Hoy {{ diaHoy }}
-    </h2>
+<div class="max-w-full mx-auto p-4 bg-white rounded-lg shadow-lg dark:bg-neutral-800">
+  <h2 class="text-xl md:text-2xl font-semibold text-neutral-900 dark:text-white text-center mb-4 md:mb-6">
+    Asistencia semanal - {{ diaHoy }}
+  </h2>
 
-    <!-- Mostrar la fecha seleccionada -->
-    <div *ngIf="fechaSeleccionada" class="mb-4">
-      <p class="text-center text-lg">Fecha seleccionada: {{ fechaSeleccionada }}</p>
-    </div>
+  <!-- Contenedor con scroll horizontal solo en pantallas muy pequeñas -->
+  <div class="overflow-x-auto">
+    <div
+      class="flex flex-wrap gap-4 w-full min-w-[280px] justify-center mx-auto"
+      style="min-width: auto;">
+      <ng-container *ngFor="let dia of diasSemana">
+        <div
+          class="flex-grow min-w-[220px] max-w-[280px] border border-neutral-300 dark:border-neutral-600 rounded-lg p-3 shadow-sm flex flex-col"
+        >
+          <h3
+            class="text-md md:text-lg font-semibold text-neutral-800 dark:text-white mb-3 border-b border-neutral-300 dark:border-neutral-600 pb-1 text-center"
+          >
+            {{ dia }}
+          </h3>
 
-    <!-- Selector de fecha -->
-    <div class="flex justify-center mb-4">
-      <div class="relative max-w-sm">
-        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-          <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-400" aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-          </svg>
+          <ng-container
+            *ngIf="horariosPorDia[dia] && horariosPorDia[dia].length > 0; else sinHorarios"
+          >
+            <ul class="space-y-2 max-h-64 overflow-y-auto">
+              <li
+                *ngFor="let horario of horariosPorDia[dia]"
+                class="flex justify-between items-center border-b border-neutral-200 dark:border-neutral-700 py-1 last:border-b-0"
+              >
+                <div class="flex flex-col flex-grow max-w-[160px]">
+                  <span
+                    class="font-medium text-neutral-900 dark:text-white truncate text-sm"
+                    title="{{ horario.nombre }}"
+                  >
+                    {{ horario.nombre }}
+                  </span>
+                  <span class="text-xs text-neutral-600 dark:text-neutral-400">
+                    {{ horario.hora }}
+                  </span>
+                </div>
+                <button
+                  title="Registrar asistencia"
+                  (click)="registrarAsistencia(horario)"
+                  class="flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1 transition whitespace-nowrap dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+                >
+                    Registrar
+                </button>
+              </li>
+            </ul>
+          </ng-container>
+
+          <ng-template #sinHorarios>
+            <p class="text-neutral-500 dark:text-neutral-400 text-center text-xs mt-4">
+              No hay pacientes
+            </p>
+          </ng-template>
         </div>
-        <!-- Input de tipo date -->
-        <input id="datepicker-format" type="date" [(ngModel)]="fechaSeleccionada" (change)="onFechaChange()"
-          class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-      </div>
-    </div>
-
-    <!-- Tabla de horarios -->
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg" *ngIf="horarios.length > 0">
-      <table class="w-full text-sm text-left rtl:text-right text-neutral-500 dark:text-neutral-400">
-        <thead class="text-xs text-neutral-700 uppercase bg-neutral-50 dark:bg-neutral-700 dark:text-neutral-400">
-          <tr>
-            <th scope="col" class="px-6 py-3 text-center">Paciente</th>
-            <th scope="col" class="px-6 py-3 text-center">Hora</th>
-            <th scope="col" class="px-6 py-3 text-center">Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Recorremos los horarios -->
-          <tr *ngFor="let horario of horarios"
-            class="odd:bg-white odd:dark:bg-neutral-900 even:bg-neutral-50 even:dark:bg-neutral-800 border-b dark:border-neutral-700">
-            <td class="px-6 py-4 font-medium text-neutral-900 whitespace-nowrap dark:text-white text-center">
-              {{ horario.paciente.nombre }} {{ horario.paciente.apellido }}
-            </td>
-            <td class="px-6 py-4 text-center">
-              {{ horario.hora }}
-            </td>
-            <td class="px-6 py-4 text-center">
-              <button class="font-medium text-green-600 dark:text-green-500 hover:underline mr-5">
-                <svg class="w-6 h-6 text-neutral-800 dark:text-white" aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M5 11.917 9.724 16.5 19 7.5" />
-                </svg>
-              </button>
-              <button class="font-medium text-red-600 dark:text-red-500 hover:underline">
-                <svg class="w-6 h-6 text-neutral-800 dark:text-white" aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div *ngIf="horarios.length === 0" class="text-center text-neutral-500 dark:text-neutral-400">
-      No hay pacientes para esta fecha.
+      </ng-container>
     </div>
   </div>
 </div>
+

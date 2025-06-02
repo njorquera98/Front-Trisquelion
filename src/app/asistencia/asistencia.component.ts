@@ -2,15 +2,30 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HorarioService } from '../services/horario.service';
+import { Horario } from '../models/horario.model';
 
 @Component({
   selector: 'app-asistencia',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './asistencia.component.html',
   styleUrl: './asistencia.component.css'
 })
 export class AsistenciaComponent implements OnInit {
-  horarios: any[] = [];
+  // Días y horas fijas para construir la tabla
+  diasSemana: string[] = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+  horasDelDia: string[] = [
+    '09:00:00', '09:30:00', '10:00:00', '11:00:00',
+    '14:00:00', '14:30:00', '15:00:00',
+    '17:00:00', '18:00:00', '19:30:00'
+  ];
+  horariosPorDia: any = {};
+
+  // Datos traídos del backend
+  //horariosPorDia: { [key: string]: Horario[] } = {};
+
+  // Variables de control de fecha (no se usan directamente para esta vista, pero se mantienen por si agregas input date)
   diaHoy: string = '';
   fechaSeleccionada: string = '';
 
@@ -18,44 +33,41 @@ export class AsistenciaComponent implements OnInit {
 
   ngOnInit(): void {
     this.obtenerFechaHoy();
-    this.cargarHorariosDeFecha();  // Cargar horarios al inicio con la fecha actual
+    this.cargarHorariosDeFecha();  // Cargar la semana completa al inicio
   }
 
   obtenerFechaHoy(): void {
     const fechaHoy = new Date();
 
-    // Usar 'toLocaleDateString' para mostrar la fecha completa
     const opciones: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
     this.diaHoy = fechaHoy.toLocaleDateString('es-ES', opciones);
 
-    // Formatear la fecha como dd-MM-yyyy para el input de tipo date
     const dia = fechaHoy.getDate().toString().padStart(2, '0');
     const mes = (fechaHoy.getMonth() + 1).toString().padStart(2, '0');
     const año = fechaHoy.getFullYear();
 
-    this.fechaSeleccionada = `${dia}-${mes}-${año}`; // Formato dd-MM-yyyy
+    this.fechaSeleccionada = `${dia}-${mes}-${año}`;
   }
 
   cargarHorariosDeFecha(): void {
-    if (this.fechaSeleccionada) {
-      this.horarioService.getHorariosPorFecha(this.fechaSeleccionada).subscribe((horarios: any[]) => {
-        this.horarios = horarios.sort((a, b) => a.hora.localeCompare(b.hora));
-        console.log(`Horarios para ${this.fechaSeleccionada}:`, this.horarios);
-      });
-    }
+    this.horarioService.getHorariosPorSemana().subscribe((horariosPorDia: { [dia: string]: Horario[] }) => {
+      this.horariosPorDia = horariosPorDia;
+      console.log('Horarios de la semana:', this.horariosPorDia);
+    });
   }
 
-  // Método para manejar el cambio de fecha en el input
+  // Este método es opcional si decides usar un <input type="date"> para filtrar por día
   onFechaChange(): void {
     if (this.fechaSeleccionada) {
-      // La fecha viene en formato YYYY-MM-DD, y la convertimos a dd-MM-yyyy
       const [anio, mes, dia] = this.fechaSeleccionada.split('-');
-
-      // Convertir a formato dd-MM-yyyy
-      this.fechaSeleccionada = `${dia}-${mes}-${anio}`;
-
+      this.fechaSeleccionada = `${dia}-${mes}-${anio}`; // dd-MM-yyyy
       this.cargarHorariosDeFecha();
     }
   }
 
+  registrarAsistencia(horario: Horario) {
+    console.log('Registrando Asistencia del dia:', horario);
+  }
 }
+
+
