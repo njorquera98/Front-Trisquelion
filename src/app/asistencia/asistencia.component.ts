@@ -3,16 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HorarioService } from '../services/horario.service';
 import { Horario } from '../models/horario.model';
+import { ConfirmarAsistenciaComponent } from '../confirmar-asistencia/confirmar-asistencia.component';
+import { AsistenciaService } from '../services/asistencia.service';
 
 @Component({
   selector: 'app-asistencia',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ConfirmarAsistenciaComponent],
   templateUrl: './asistencia.component.html',
   styleUrl: './asistencia.component.css'
 })
 export class AsistenciaComponent implements OnInit {
-  // Días y horas fijas para construir la tabla
   diasSemana: string[] = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
   horasDelDia: string[] = [
@@ -22,18 +23,18 @@ export class AsistenciaComponent implements OnInit {
   ];
   horariosPorDia: any = {};
 
-  // Datos traídos del backend
-  //horariosPorDia: { [key: string]: Horario[] } = {};
+  modalVisible = false;
+  pacienteSeleccionado: any = null;
 
-  // Variables de control de fecha (no se usan directamente para esta vista, pero se mantienen por si agregas input date)
   diaHoy: string = '';
   fechaSeleccionada: string = '';
 
-  constructor(private horarioService: HorarioService) { }
+  constructor(private horarioService: HorarioService,
+    private asistenciaService: AsistenciaService) { }
 
   ngOnInit(): void {
     this.obtenerFechaHoy();
-    this.cargarHorariosDeFecha();  // Cargar la semana completa al inicio
+    this.cargarHorariosDeFecha();
   }
 
   obtenerFechaHoy(): void {
@@ -56,7 +57,6 @@ export class AsistenciaComponent implements OnInit {
     });
   }
 
-  // Este método es opcional si decides usar un <input type="date"> para filtrar por día
   onFechaChange(): void {
     if (this.fechaSeleccionada) {
       const [anio, mes, dia] = this.fechaSeleccionada.split('-');
@@ -68,6 +68,75 @@ export class AsistenciaComponent implements OnInit {
   registrarAsistencia(horario: Horario) {
     console.log('Registrando Asistencia del dia:', horario);
   }
-}
 
+  abrirModal(horario: any, dia: string): void {
+    this.pacienteSeleccionado = {
+      nombreCompleto: horario.nombre,
+      hora: horario.hora,
+      fecha: horario.fecha,
+      pacienteId: horario.pacienteId,
+      dia: dia, // Aquí guardamos el día que se pasa desde el template
+    };
+    this.modalVisible = true;
+  }
+
+  cerrarModal(): void {
+    this.modalVisible = false;
+    this.pacienteSeleccionado = null;
+  }
+
+  obtenerDiaDeHorario(horario: any): string {
+    // Ahora simplemente devolvemos el día almacenado en el objeto horario
+    return horario.dia || '';
+  }
+
+  procesarRespuesta(resultado: 'si' | 'no' | 'reprogramar') {
+    if (!this.pacienteSeleccionado) return;
+
+    if (resultado === 'si') {
+      this.actualizarEstadoHorario(this.pacienteSeleccionado, 'Asistió');
+    } else if (resultado === 'no') {
+      this.actualizarEstadoHorario(this.pacienteSeleccionado, 'No asistió');
+    } else if (resultado === 'reprogramar') {
+      this.actualizarEstadoHorario(this.pacienteSeleccionado, 'Reprogramado');
+      this.abrirModal(this.pacienteSeleccionado, this.pacienteSeleccionado.dia);
+      return;
+    }
+
+    this.cerrarModal();
+  }
+
+  actualizarEstadoHorario(horarioSeleccionado: any, estado: string) {
+    const dia = this.obtenerDiaDeHorario(horarioSeleccionado);
+
+    if (!dia) {
+      console.warn('No se pudo determinar el día para actualizar el horario');
+      return;
+    }
+
+    const horarios = this.horariosPorDia[dia];
+    if (!horarios || horarios.length === 0) {
+      console.warn(`No hay horarios para el día: ${dia}`);
+      return;
+    }
+
+    const nombreBuscar = horarioSeleccionado.nombreCompleto?.trim().toLowerCase();
+
+    const index = horarios.findIndex((h: any) => {
+      const nombreHorario = h.nombre?.trim().toLowerCase();
+      return h.hora === horarioSeleccionado.hora && nombreHorario === nombreBuscar;
+    });
+
+    if (index !== -1) {
+      horarios[index] = {
+        ...horarios[index],
+        estadoAsistencia: estado,
+      };
+      // Esto forza la detección de cambios y actualización del HTML
+      this.horariosPorDia = { ...this.horariosPorDia };
+    } else {
+      console.warn('No se encontró el horario para actualizar:', horarioSeleccionado);
+    }
+  }
+}
 
