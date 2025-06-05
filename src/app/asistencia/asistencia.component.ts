@@ -29,8 +29,10 @@ export class AsistenciaComponent implements OnInit {
   diaHoy: string = '';
   fechaSeleccionada: string = '';
 
-  constructor(private horarioService: HorarioService,
-    private asistenciaService: AsistenciaService) { }
+  constructor(
+    private horarioService: HorarioService,
+    private asistenciaService: AsistenciaService
+  ) { }
 
   ngOnInit(): void {
     this.obtenerFechaHoy();
@@ -38,14 +40,13 @@ export class AsistenciaComponent implements OnInit {
   }
 
   obtenerFechaHoy(): void {
-    const fechaHoy = new Date();
-
+    const hoy = new Date();
     const opciones: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-    this.diaHoy = fechaHoy.toLocaleDateString('es-ES', opciones);
+    this.diaHoy = hoy.toLocaleDateString('es-ES', opciones);
 
-    const dia = fechaHoy.getDate().toString().padStart(2, '0');
-    const mes = (fechaHoy.getMonth() + 1).toString().padStart(2, '0');
-    const año = fechaHoy.getFullYear();
+    const dia = hoy.getDate().toString().padStart(2, '0');
+    const mes = (hoy.getMonth() + 1).toString().padStart(2, '0');
+    const año = hoy.getFullYear();
 
     this.fechaSeleccionada = `${dia}-${mes}-${año}`;
   }
@@ -53,30 +54,51 @@ export class AsistenciaComponent implements OnInit {
   cargarHorariosDeFecha(): void {
     this.horarioService.getHorariosPorSemana().subscribe((horariosPorDia: { [dia: string]: Horario[] }) => {
       this.horariosPorDia = horariosPorDia;
-      console.log('Horarios de la semana:', this.horariosPorDia);
     });
   }
 
   onFechaChange(): void {
     if (this.fechaSeleccionada) {
       const [anio, mes, dia] = this.fechaSeleccionada.split('-');
-      this.fechaSeleccionada = `${dia}-${mes}-${anio}`; // dd-MM-yyyy
+      this.fechaSeleccionada = `${dia}-${mes}-${anio}`;
       this.cargarHorariosDeFecha();
     }
   }
 
-  registrarAsistencia(horario: Horario) {
-    console.log('Registrando Asistencia del dia:', horario);
+  obtenerFechaDelDia(dia: string): string {
+    const diasSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+    const hoy = new Date();
+    const hoyLocal = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+
+    const indiceDiaObjetivo = diasSemana.indexOf(dia.toLowerCase());
+    if (indiceDiaObjetivo === -1) return '';
+
+    const diaActual = hoyLocal.getDay();
+
+    let diferencia = indiceDiaObjetivo - diaActual;
+    if (diferencia < 0) diferencia += 7;
+
+    const fechaObjetivo = new Date(hoyLocal);
+    fechaObjetivo.setDate(hoyLocal.getDate() + diferencia);
+
+    const diaStr = fechaObjetivo.getDate().toString().padStart(2, '0');
+    const mesStr = (fechaObjetivo.getMonth() + 1).toString().padStart(2, '0');
+    const anioStr = fechaObjetivo.getFullYear();
+
+    return `${diaStr}-${mesStr}-${anioStr}`;
   }
 
   abrirModal(horario: any, dia: string): void {
+    const fechaCalculada = this.obtenerFechaDelDia(dia);
+
     this.pacienteSeleccionado = {
       nombreCompleto: horario.nombre,
       hora: horario.hora,
-      fecha: horario.fecha,
+      fecha: fechaCalculada,
       pacienteId: horario.pacienteId,
-      dia: dia, // Aquí guardamos el día que se pasa desde el template
+      dia: dia,
     };
+
     this.modalVisible = true;
   }
 
@@ -86,22 +108,52 @@ export class AsistenciaComponent implements OnInit {
   }
 
   obtenerDiaDeHorario(horario: any): string {
-    // Ahora simplemente devolvemos el día almacenado en el objeto horario
     return horario.dia || '';
   }
 
-  procesarRespuesta(resultado: 'si' | 'no' | 'reprogramar') {
+  procesarRespuesta(resultado: 'si' | 'no' | 'suspende' | 'reprogramar') {
     if (!this.pacienteSeleccionado) return;
 
-    if (resultado === 'si') {
-      this.actualizarEstadoHorario(this.pacienteSeleccionado, 'Asistió');
-    } else if (resultado === 'no') {
-      this.actualizarEstadoHorario(this.pacienteSeleccionado, 'No asistió');
-    } else if (resultado === 'reprogramar') {
-      this.actualizarEstadoHorario(this.pacienteSeleccionado, 'Reprogramado');
-      this.abrirModal(this.pacienteSeleccionado, this.pacienteSeleccionado.dia);
-      return;
+    const { nombreCompleto, dia, hora, fecha } = this.pacienteSeleccionado;
+
+    // Convertir dd-mm-yyyy a yyyy-mm-dd para parseo
+    let fechaTransformada = fecha;
+    if (/^\d{2}-\d{2}-\d{4}$/.test(fecha)) {
+      const [diaStr, mesStr, anioStr] = fecha.split('-');
+      fechaTransformada = `${anioStr}-${mesStr}-${diaStr}`;
     }
+
+    // Crear fecha local evitando desfase horario
+    const [anioStr, mesStr, diaStr] = fechaTransformada.split('-');
+    const fechaObj = new Date(Number(anioStr), Number(mesStr) - 1, Number(diaStr));
+
+    // Formatear fecha dd-mm-yy
+    const diaF = fechaObj.getDate().toString().padStart(2, '0');
+    const mesF = (fechaObj.getMonth() + 1).toString().padStart(2, '0');
+    const anioF = fechaObj.getFullYear().toString().slice(-2);
+
+    const fechaCorta = `${diaF}-${mesF}-${anioF}`;
+
+    if (resultado === 'si') {
+      console.log(`✅ Paciente ${nombreCompleto} asistió el día ${fechaCorta} en el horario ${hora}`);
+      this.actualizarEstadoHorario(this.pacienteSeleccionado, 'Si Asiste');
+    }
+
+    else if (resultado === 'no') {
+      console.log(`❌ Paciente ${nombreCompleto} NO asistió el día ${fechaCorta} en el horario ${hora}`);
+      this.actualizarEstadoHorario(this.pacienteSeleccionado, 'No Asiste');
+    }
+
+    else if (resultado === 'suspende') {
+      console.log(`❌ Paciente ${nombreCompleto} suspendió el día ${fechaCorta} en el horario ${hora}`);
+      this.actualizarEstadoHorario(this.pacienteSeleccionado, 'Suspendido');
+    }
+    else if (resultado === 'reprogramar') {
+      console.log(`🔁 Paciente ${nombreCompleto} reprogramó su asistencia del día ${fechaCorta} en el horario ${hora}`);
+      this.actualizarEstadoHorario(this.pacienteSeleccionado, 'Reprogramado');
+    }
+    this.abrirModal(this.pacienteSeleccionado, dia);
+
 
     this.cerrarModal();
   }
@@ -109,16 +161,10 @@ export class AsistenciaComponent implements OnInit {
   actualizarEstadoHorario(horarioSeleccionado: any, estado: string) {
     const dia = this.obtenerDiaDeHorario(horarioSeleccionado);
 
-    if (!dia) {
-      console.warn('No se pudo determinar el día para actualizar el horario');
-      return;
-    }
+    if (!dia) return;
 
     const horarios = this.horariosPorDia[dia];
-    if (!horarios || horarios.length === 0) {
-      console.warn(`No hay horarios para el día: ${dia}`);
-      return;
-    }
+    if (!horarios) return;
 
     const nombreBuscar = horarioSeleccionado.nombreCompleto?.trim().toLowerCase();
 
@@ -132,11 +178,36 @@ export class AsistenciaComponent implements OnInit {
         ...horarios[index],
         estadoAsistencia: estado,
       };
-      // Esto forza la detección de cambios y actualización del HTML
       this.horariosPorDia = { ...this.horariosPorDia };
-    } else {
-      console.warn('No se encontró el horario para actualizar:', horarioSeleccionado);
     }
   }
+
+  getFechaDelDiaSemana(dia: string): string {
+    const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const hoy = new Date();
+    const diaActual = hoy.getDay(); // 0 = domingo
+
+    const offset = diasSemana.indexOf(dia) - ((diaActual + 6) % 7);
+    const fecha = new Date(hoy);
+    fecha.setDate(hoy.getDate() + offset);
+
+    const diaNumero = fecha.getDate();
+    return `${dia} ${diaNumero}`;
+  }
+
+  procesarReprogramacion(data: { fecha: string; hora: string }) {
+    if (!this.pacienteSeleccionado) return;
+
+    const { nombreCompleto, fecha: fechaOriginal, hora: horaOriginal } = this.pacienteSeleccionado;
+
+    console.log(`🔁 Paciente ${nombreCompleto} REPROGRAMÓ su asistencia`);
+    console.log(`📆 De: ${fechaOriginal} a ${data.fecha}`);
+    console.log(`🕒 De: ${horaOriginal} a ${data.hora}`);
+
+    this.actualizarEstadoHorario(this.pacienteSeleccionado, 'Reprogramado');
+
+    // Aquí podrías agregar lógica adicional para actualizar backend o interfaz, si es necesario
+  }
+
 }
 

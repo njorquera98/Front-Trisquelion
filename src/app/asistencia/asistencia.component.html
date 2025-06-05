@@ -7,7 +7,8 @@
   <div class="overflow-x-auto">
     <div
       class="flex flex-wrap gap-4 w-full min-w-[280px] justify-center mx-auto"
-      style="min-width: auto;">
+      style="min-width: auto;"
+    >
       <ng-container *ngFor="let dia of diasSemana">
         <div
           class="flex-grow min-w-[220px] max-w-[280px] border border-neutral-300 dark:border-neutral-600 rounded-lg p-3 shadow-sm flex flex-col"
@@ -15,12 +16,10 @@
           <h3
             class="text-md md:text-lg font-semibold text-neutral-800 dark:text-white mb-3 border-b border-neutral-300 dark:border-neutral-600 pb-1 text-center"
           >
-            {{ dia }}
+            {{ getFechaDelDiaSemana(dia) }}
           </h3>
 
-          <ng-container
-            *ngIf="horariosPorDia[dia] && horariosPorDia[dia].length > 0; else sinHorarios"
-          >
+          <ng-container *ngIf="horariosPorDia[dia] && horariosPorDia[dia].length > 0; else sinHorarios">
             <ul class="space-y-2 max-h-64 overflow-y-auto">
               <li
                 *ngFor="let horario of horariosPorDia[dia]"
@@ -45,23 +44,22 @@
                     (click)="abrirModal(horario, dia)"
                     class="flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1 transition whitespace-nowrap dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
                   >
-                      Registrar
+                    Registrar
                   </button>
                 </ng-container>
 
                 <ng-template #estadoRegistrado>
                   <span
-                    class="text-xs font-semibold px-2 py-1 rounded text-white"
+                    class="text-xs font-semibold px-2 py-1 rounded bg-transparent border-2"
                     [ngClass]="{
-                      'bg-green-600': horario.estadoAsistencia === 'Asistió',
-                      'bg-red-500': horario.estadoAsistencia === 'No asistió',
-                      'bg-yellow-500': horario.estadoAsistencia === 'Reprogramado'
+                      'border-green-400 text-green-400': horario.estadoAsistencia === 'Si Asiste',
+                      'border-red-400 text-red-400': horario.estadoAsistencia === 'No Asiste' || horario.estadoAsistencia === 'Suspendido',
+                      'border-yellow-500 text-yellow-500': horario.estadoAsistencia === 'Reprogramado'
                     }"
                   >
                     {{ horario.estadoAsistencia }}
                   </span>
                 </ng-template>
-
               </li>
             </ul>
           </ng-container>
@@ -82,5 +80,5 @@
   [nombrePaciente]="pacienteSeleccionado?.nombreCompleto"
   (cerrar)="cerrarModal()"
   (respuesta)="procesarRespuesta($event)"
+  (reprogramar)="procesarReprogramacion($event)"
 ></app-confirmar-asistencia>
-
