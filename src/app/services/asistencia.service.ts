@@ -12,11 +12,39 @@ export class AsistenciaService {
 
   constructor(private http: HttpClient) { }
 
-  // Agregar un horario
-  registrarAsistencia(horario: Asistencia): Observable<any> {
-    return this.http.post<Asistencia>(this.apiUrl, horario);
+  create(dto: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, dto);
+  }
+
+  actualizarEstadoAsistencia(pacienteId: number, fecha: string, hora: string, estado: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}`, {
+      pacienteId,
+      fecha,
+      hora,
+      estado
+    });
+  }
+
+  // Generar asistencias para la semana desde una fecha inicio (string)
+  generarAsistenciasGlobal(fechaInicio: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/generar-semana`, { inicio: fechaInicio });
+  }
+
+  // Obtener asistencias de un paciente en un rango de fechas
+  findByPacienteAndRango(pacienteId: number, inicio: string, fin: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/paciente/${pacienteId}?inicio=${inicio}&fin=${fin}`);
+  }
+
+  getAsistenciasPorSemana(fechaInicio: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/semana?inicio=${fechaInicio}`);
+  }
+
+  getAsistenciasPorRango(inicio: string, fin: string): Observable<Asistencia[]> {
+    return this.http.get<Asistencia[]>(`${this.apiUrl}/rango?inicio=${inicio}&fin=${fin}`);
+  }
+
+  obtenerAsistenciasRango(inicio: string, fin: string) {
+    return this.http.get<any[]>(`/asistencia/rango?inicio=${inicio}&fin=${fin}`);
   }
 }
-
-
 
