@@ -3,208 +3,165 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConfirmarAsistenciaComponent } from '../confirmar-asistencia/confirmar-asistencia.component';
 import { AsistenciaService } from '../services/asistencia.service';
-import { Asistencia } from '../models/asistencia.model';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-asistencia',
   standalone: true,
   imports: [CommonModule, FormsModule, ConfirmarAsistenciaComponent],
   templateUrl: './asistencia.component.html',
-  styleUrl: './asistencia.component.css'
+  styleUrl: './asistencia.component.css',
 })
 export class AsistenciaComponent implements OnInit {
+  diasMostrarFechas: { nombre: string; fecha: Date }[] = [];
+  horariosPorDia: { [key: string]: any[] } = {};
+
+  diaHoy: string = '';
   modalVisible = false;
   pacienteSeleccionado: any = null;
 
-  diaHoy: string = '';
-  fechaSeleccionada: string = '';
-  diasRango: string[] = [];
-  horariosPorDia: { [fecha: string]: Asistencia[] } = {};
+  diasPrimeraSemana: { nombre: string; fecha: Date }[] = [];
+  diasSegundaSemana: { nombre: string; fecha: Date }[] = [];
 
   constructor(private asistenciaService: AsistenciaService) { }
 
-  // Incluir Domingo para que coincida con getDay() de JavaScript (0 = Domingo)
-  diasSemanaCompleta: string[] = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  ngOnInit() {
+    this.generarDiasMostrar();
+    this.dividirDiasEnDosFilas();
+    this.cargarAsistenciasDosSemanas();
 
-  // Esta sigue siendo útil si quieres mostrar solo de lunes a sábado
-  diasSemana: string[] = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-
-  obtenerFechaDelDiaSemana(dia: string): string {
-    const hoy = new Date();
-    const diaActual = hoy.getDay(); // 0 (Domingo) a 6 (Sábado)
-    const indexDeseado = this.diasSemanaCompleta.indexOf(dia); // Buscar índice en el array completo
-    const diferenciaDias = (indexDeseado - diaActual + 7) % 7;
-
-    const fecha = new Date(hoy);
-    fecha.setDate(hoy.getDate() + diferenciaDias);
-
-    return fecha.toLocaleDateString('es-ES');
+    this.diaHoy = this.obtenerDiaSemanaTexto(new Date());
   }
 
-  ngOnInit(): void {
-    this.obtenerFechaHoy();
-    const fechaInicio = this.getInicioSemana();
-    this.generarRangoDias(fechaInicio);
-    this.cargarAsistenciasDeDosSemanas();
+  dividirDiasEnDosFilas() {
+    const mitad = Math.ceil(this.diasMostrarFechas.length / 2);
+    this.diasPrimeraSemana = this.diasMostrarFechas.slice(0, mitad);
+    this.diasSegundaSemana = this.diasMostrarFechas.slice(mitad);
   }
 
-  obtenerFechaHoy(): void {
-    const hoy = new Date();
-    const opciones: Intl.DateTimeFormatOptions = {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    };
-    this.diaHoy = hoy.toLocaleDateString('es-ES', opciones);
+  obtenerFechaDelDiaSemana(clave: string): string {
+    const index = parseInt(clave.split('_')[1], 10);
+    const diaObj = this.diasMostrarFechas[index];
+    if (!diaObj) return '';
 
-    const dia = hoy.getDate().toString().padStart(2, '0');
-    const mes = (hoy.getMonth() + 1).toString().padStart(2, '0');
-    const año = hoy.getFullYear();
-
-    this.fechaSeleccionada = `${dia}-${mes}-${año}`;
+    return this.formatFecha(diaObj.fecha);
   }
 
-  getInicioSemana(): string {
-    const hoy = new Date();
-    const diaSemana = hoy.getDay(); // Domingo = 0
-    const offset = diaSemana === 0 ? -6 : 1 - diaSemana;
-    const inicioSemana = new Date(hoy);
-    inicioSemana.setDate(hoy.getDate() + offset);
-
-    const yyyy = inicioSemana.getFullYear();
-    const mm = String(inicioSemana.getMonth() + 1).padStart(2, '0');
-    const dd = String(inicioSemana.getDate()).padStart(2, '0');
-
-    return `${yyyy}-${mm}-${dd}`;
-  }
-
-  generarRangoDias(fechaInicio: string) {
-    this.diasRango = [];
-    const inicio = new Date(fechaInicio);
+  generarDiasMostrar() {
+    const lunes = this.getLunesDeEstaSemana();
+    this.diasMostrarFechas = [];
 
     for (let i = 0; i < 14; i++) {
-      const fecha = new Date(inicio);
-      fecha.setDate(inicio.getDate() + i);
+      const fecha = new Date(lunes);
+      fecha.setDate(lunes.getDate() + i);
 
-      const yyyy = fecha.getFullYear();
-      const mm = String(fecha.getMonth() + 1).padStart(2, '0');
-      const dd = String(fecha.getDate()).padStart(2, '0');
+      if (fecha.getDay() !== 0) {
+        const nombre = this.obtenerDiaSemanaTexto(fecha);
+        this.diasMostrarFechas.push({ nombre, fecha });
+      }
+    }
+  }
 
-      this.diasRango.push(`${yyyy}-${mm}-${dd}`);
+  cargarAsistenciasDosSemanas() {
+    const inicio = this.getLunesDeEstaSemana();
+    const fin = this.getSabadoDeSemanaSiguiente();
+
+    const inicioStr = format(inicio, 'yyyy-MM-dd');
+    const finStr = format(fin, 'yyyy-MM-dd');
+
+    console.log('Cargando asistencias desde', inicioStr, 'hasta', finStr);
+
+    this.asistenciaService.getAsistenciasRango(inicioStr, finStr).subscribe({
+      next: (asistencias) => {
+        console.log('Asistencias recibidas:', asistencias);
+        this.organizarPorDia(asistencias);
+      },
+      error: (err) => {
+        console.error('Error cargando asistencias:', err);
+      },
+    });
+  }
+
+  // Nueva función para parsear fechas sin desfase horario
+  parseDateSinZona(fechaString: string): Date {
+    const partes = fechaString.split('-').map(Number);
+    // new Date(año, mesIndex, día)
+    return new Date(partes[0], partes[1] - 1, partes[2]);
+  }
+
+  organizarPorDia(asistencias: any[]) {
+    this.horariosPorDia = {};
+
+    this.diasMostrarFechas.forEach((diaObj, i) => {
+      const key = diaObj.nombre + '_' + i;
+      this.horariosPorDia[key] = [];
+    });
+
+    for (const asistencia of asistencias) {
+      // Uso parseDateSinZona para evitar desfase
+      const fecha = this.parseDateSinZona(asistencia.fecha);
+      const fechaStr = format(fecha, 'yyyy-MM-dd');
+
+      this.diasMostrarFechas.forEach((diaObj, i) => {
+        const key = diaObj.nombre + '_' + i;
+        const fechaDiaStr = format(diaObj.fecha, 'yyyy-MM-dd');
+
+        if (fechaStr === fechaDiaStr) {
+          this.horariosPorDia[key].push(asistencia);
+        }
+      });
     }
 
-    console.log('Fechas generadas para los 14 días:', this.diasRango); // 👈 LOG 3
+    console.log('horariosPorDia', this.horariosPorDia);
   }
 
-  cargarAsistenciasDeDosSemanas(): void {
-    if (this.diasRango.length === 0) return;
-
-    this.asistenciaService.getAsistenciasPorRango(this.diasRango[0], this.diasRango[this.diasRango.length - 1])
-      .subscribe((asistencias: Asistencia[]) => {
-        console.log('Asistencias recibidas del backend:', asistencias); // 👈 LOG 1
-        this.horariosPorDia = {};
-
-        asistencias.forEach((a: Asistencia) => {
-          const fecha = a.fecha;
-          if (!this.horariosPorDia[fecha]) {
-            this.horariosPorDia[fecha] = [];
-          }
-          this.horariosPorDia[fecha].push(a);
-        });
-        console.log('Horarios organizados por día:', this.horariosPorDia); // 👈 LOG 2
-      });
+  obtenerDiaSemanaTexto(fecha: Date): string {
+    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    return dias[fecha.getDay()];
   }
 
-  abrirModal(horario: Asistencia, fecha: string): void {
-    this.pacienteSeleccionado = {
-      nombreCompleto: horario.paciente?.nombre + ' ' + horario.paciente?.apellido,
-      hora: horario.hora_programada,
-      fecha: fecha,
-      pacienteId: horario.paciente?.paciente_id,
-      dia: fecha,
-      horarioOriginal: horario
-    };
+  getLunesDeEstaSemana(): Date {
+    const hoy = new Date();
+    const dia = hoy.getDay();
+    const diff = dia === 0 ? -6 : 1 - dia;
+    const lunes = new Date(hoy);
+    lunes.setDate(hoy.getDate() + diff);
+    lunes.setHours(0, 0, 0, 0);
+    return lunes;
+  }
+
+  getSabadoDeSemanaSiguiente(): Date {
+    const lunes = this.getLunesDeEstaSemana();
+    const sabadoSiguiente = new Date(lunes);
+    sabadoSiguiente.setDate(lunes.getDate() + 11);
+    sabadoSiguiente.setHours(23, 59, 59, 999);
+    return sabadoSiguiente;
+  }
+
+  formatFecha(fecha: Date): string {
+    return format(fecha, 'dd/MM/yyyy');
+  }
+
+  abrirModal(horario: any, diaConIndice: string) {
+    this.pacienteSeleccionado = horario.paciente;
     this.modalVisible = true;
   }
 
-  cerrarModal(): void {
+  cerrarModal() {
     this.modalVisible = false;
     this.pacienteSeleccionado = null;
   }
 
-  procesarRespuesta(resultado: 'si' | 'no' | 'suspende' | 'reprogramar') {
-    if (!this.pacienteSeleccionado) return;
-
-    const estadoMap = {
-      si: 'Si Asiste',
-      no: 'No Asiste',
-      suspende: 'Suspendido',
-      reprogramar: 'Reprogramado',
-    };
-
-    const nuevoEstado = estadoMap[resultado];
-
-    this.asistenciaService.actualizarEstadoAsistencia(
-      this.pacienteSeleccionado.pacienteId,
-      this.pacienteSeleccionado.fecha,
-      this.pacienteSeleccionado.hora,
-      nuevoEstado
-    ).subscribe({
-      next: () => {
-        this.actualizarEstadoHorario(
-          this.horariosPorDia[this.pacienteSeleccionado.fecha],
-          this.pacienteSeleccionado.horarioOriginal,
-          this.pacienteSeleccionado.nombreCompleto,
-          nuevoEstado
-        );
-        this.cerrarModal();
-      },
-      error: () => {
-        alert('Error al actualizar la asistencia. Intente nuevamente.');
-      }
-    });
+  procesarRespuesta(event: any) {
+    console.log('Respuesta modal:', event);
+    this.cargarAsistenciasDosSemanas();
+    this.cerrarModal();
   }
 
-  actualizarEstadoHorario(
-    horarios: Asistencia[],
-    horarioSeleccionado: Asistencia,
-    nombreBuscar: string,
-    estado: string
-  ): void {
-    const index = horarios.findIndex(h =>
-      h.hora_programada === horarioSeleccionado.hora_programada &&
-      (h.paciente?.nombre + ' ' + h.paciente?.apellido).trim().toLowerCase() === nombreBuscar.toLowerCase()
-    );
-
-    if (index !== -1) {
-      horarios[index].estado = estado;
-      this.horariosPorDia = { ...this.horariosPorDia };
-    }
-  }
-
-  procesarReprogramacion(data: { fecha: string; hora: string }) {
-    if (!this.pacienteSeleccionado) return;
-
-    this.asistenciaService.actualizarEstadoAsistencia(
-      this.pacienteSeleccionado.pacienteId,
-      data.fecha,
-      data.hora,
-      'Reprogramado'
-    ).subscribe({
-      next: () => {
-        this.actualizarEstadoHorario(
-          this.horariosPorDia[this.pacienteSeleccionado.fecha],
-          this.pacienteSeleccionado.horarioOriginal,
-          this.pacienteSeleccionado.nombreCompleto,
-          'Reprogramado'
-        );
-        this.cerrarModal();
-      },
-      error: () => {
-        alert('Error al reprogramar la asistencia. Intente nuevamente.');
-      }
-    });
+  procesarReprogramacion(event: any) {
+    console.log('Reprogramar:', event);
+    this.cargarAsistenciasDosSemanas();
+    this.cerrarModal();
   }
 }
 

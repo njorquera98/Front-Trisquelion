@@ -35,16 +35,9 @@ export class AsistenciaService {
     return this.http.get(`${this.apiUrl}/paciente/${pacienteId}?inicio=${inicio}&fin=${fin}`);
   }
 
-  getAsistenciasPorSemana(fechaInicio: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/semana?inicio=${fechaInicio}`);
+  getAsistenciasRango(inicio: string, fin: string) {
+    return this.http.get<any[]>(`${this.apiUrl}/rango?inicio=${inicio}&fin=${fin}`);
   }
 
-  getAsistenciasPorRango(inicio: string, fin: string): Observable<Asistencia[]> {
-    return this.http.get<Asistencia[]>(`${this.apiUrl}/rango?inicio=${inicio}&fin=${fin}`);
-  }
-
-  obtenerAsistenciasRango(inicio: string, fin: string) {
-    return this.http.get<any[]>(`/asistencia/rango?inicio=${inicio}&fin=${fin}`);
-  }
 }
 

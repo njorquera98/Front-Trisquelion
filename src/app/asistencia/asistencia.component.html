@@ -1,81 +1,94 @@
 <div class="max-w-full mx-auto p-4 bg-white rounded-lg shadow-lg dark:bg-neutral-800">
-  <h2 class="text-xl md:text-2xl font-semibold text-neutral-900 dark:text-white text-center mb-4 md:mb-6">
+  <h2 class="text-xl md:text-2xl font-semibold text-neutral-900 dark:text-white text-center mb-6">
     Asistencia semanal - {{ diaHoy }}
   </h2>
 
-  <div class="overflow-x-auto">
-    <div
-      class="flex flex-wrap gap-4 w-full min-w-[280px] justify-center mx-auto"
-      style="min-width: auto;"
-    >
-      <ng-container *ngFor="let dia of diasSemana">
-        <div
-          class="flex-grow min-w-[220px] max-w-[280px] border border-neutral-300 dark:border-neutral-600 rounded-lg p-3 shadow-sm flex flex-col"
-        >
-          <h3
-            class="text-md md:text-lg font-semibold text-neutral-800 dark:text-white mb-3 border-b border-neutral-300 dark:border-neutral-600 pb-1 text-center"
-          >
-            {{ obtenerFechaDelDiaSemana(dia) }}
-          </h3>
+  <!-- Primera semana -->
+  <div class="mb-6">
+    <h3 class="text-center text-lg font-semibold text-neutral-700 dark:text-neutral-200 mb-3">Semana actual</h3>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <ng-container *ngFor="let dia of diasPrimeraSemana; let i = index">
+        <ng-container *ngTemplateOutlet="tarjetaDia; context: { dia: dia, index: i }"></ng-container>
+      </ng-container>
+    </div>
+  </div>
 
-          <ng-container *ngIf="horariosPorDia[dia] && horariosPorDia[dia].length > 0; else sinHorarios">
-            <ul class="space-y-2 max-h-64 overflow-y-auto">
-              <li
-                *ngFor="let horario of horariosPorDia[dia]"
-                class="flex justify-between items-center border-b border-neutral-200 dark:border-neutral-700 py-1 last:border-b-0"
-              >
-                <div class="flex flex-col flex-grow max-w-[160px]">
-                  <span
-                    class="font-medium text-neutral-900 dark:text-white truncate text-sm"
-                  >
-                    {{ horario.paciente.nombre }} {{ horario.paciente.apellido }}
-                  </span>
-                  <span class="text-xs text-neutral-600 dark:text-neutral-400">
-                    {{ horario.hora_programada }}
-                  </span>
-                </div>
-
-                <!-- Mostrar botón o estado registrado -->
-                <ng-container *ngIf="!horario.estado; else estadoRegistrado">
-                  <button
-                    title="Registrar asistencia"
-                    (click)="abrirModal(horario, dia)"
-                    class="flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1 transition whitespace-nowrap dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
-                  >
-                    Registrar
-                  </button>
-                </ng-container>
-
-                <ng-template #estadoRegistrado>
-                  <span
-                    class="text-xs font-semibold px-2 py-1 rounded bg-transparent border-2"
-                    [ngClass]="{
-                      'border-green-400 text-green-400': horario.estado === 'Si Asiste',
-                      'border-red-400 text-red-400': horario.estado === 'No Asiste' || horario.estado === 'Suspendido',
-                      'border-yellow-500 text-yellow-500': horario.estado === 'Reprogramado'
-                    }"
-                  >
-                    {{ horario.estado }}
-                  </span>
-                </ng-template>
-              </li>
-            </ul>
-          </ng-container>
-
-          <ng-template #sinHorarios>
-            <p class="text-neutral-500 dark:text-neutral-400 text-center text-xs mt-4">
-              No hay pacientes
-            </p>
-          </ng-template>
-        </div>
+  <!-- Segunda semana -->
+  <div>
+    <h3 class="text-center text-lg font-semibold text-neutral-700 dark:text-neutral-200 mb-3">Próxima semana</h3>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <ng-container *ngFor="let dia of diasSegundaSemana; let i = index">
+        <ng-container *ngTemplateOutlet="tarjetaDia; context: { dia: dia, index: i + diasPrimeraSemana.length }"></ng-container>
       </ng-container>
     </div>
   </div>
 </div>
 
+<!-- Template reutilizable para cada día -->
+<ng-template #tarjetaDia let-dia="dia" let-index="index">
+  <div
+    class="flex-grow min-w-[220px] max-w-[280px] border border-neutral-300 dark:border-neutral-600 rounded-lg p-3 shadow-sm flex flex-col"
+  >
+    <h3
+      class="text-md md:text-lg font-semibold text-neutral-800 dark:text-white mb-3 border-b border-neutral-300 dark:border-neutral-600 pb-1 text-center"
+    >
+      {{ dia.nombre }} {{ obtenerFechaDelDiaSemana(dia.nombre + '_' + index) }}
+    </h3>
+
+    <ng-container *ngIf="(horariosPorDia[dia.nombre + '_' + index]?.length ?? 0) > 0; else sinHorarios">
+      <ul class="space-y-2 max-h-64 overflow-y-auto">
+        <li
+          *ngFor="let horario of horariosPorDia[dia.nombre + '_' + index]"
+          class="flex justify-between items-center border-b border-neutral-200 dark:border-neutral-700 py-1 last:border-b-0"
+        >
+          <div class="flex flex-col flex-grow max-w-[160px]">
+            <span class="font-medium text-neutral-900 dark:text-white truncate text-sm">
+              {{ horario.paciente?.nombre }} {{ horario.paciente?.apellido }}
+            </span>
+            <span class="text-xs text-neutral-600 dark:text-neutral-400">
+              {{ horario.hora_programada }}
+            </span>
+          </div>
+
+          <!-- Mostrar botón o estado registrado -->
+          <ng-container *ngIf="!horario.estado; else estadoRegistrado">
+            <button
+              title="Registrar asistencia"
+              (click)="abrirModal(horario, dia.nombre + '_' + index)"
+              class="flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1 transition whitespace-nowrap dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+            >
+              Registrar
+            </button>
+          </ng-container>
+
+          <ng-template #estadoRegistrado>
+            <span
+              class="text-xs font-semibold px-2 py-1 rounded bg-transparent border-2"
+              [ngClass]="{
+                'border-green-400 text-green-400': horario.estado === 'Si Asiste',
+                'border-red-400 text-red-400': horario.estado === 'No Asiste' || horario.estado === 'Suspendido',
+                'border-yellow-500 text-yellow-500': horario.estado === 'Reprogramado'
+              }"
+            >
+              {{ horario.estado }}
+            </span>
+          </ng-template>
+        </li>
+      </ul>
+    </ng-container>
+
+    <ng-template #sinHorarios>
+      <p class="text-neutral-500 dark:text-neutral-400 text-center text-xs mt-4">
+        No hay pacientes
+      </p>
+    </ng-template>
+  </div>
+</ng-template>
+
+<!-- Modal -->
 <app-confirmar-asistencia
   [visible]="modalVisible"
-  [nombrePaciente]="pacienteSeleccionado?.nombre"
+  [nombrePaciente]="pacienteSeleccionado?.nombre + ' ' + pacienteSeleccionado?.apellido"
   (cerrar)="cerrarModal()"
   (respuesta)="procesarRespuesta($event)"
   (reprogramar)="procesarReprogramacion($event)"
