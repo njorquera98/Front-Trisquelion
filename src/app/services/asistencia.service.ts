@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-import { Asistencia } from '../models/asistencia.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,13 +15,8 @@ export class AsistenciaService {
     return this.http.post(`${this.apiUrl}`, dto);
   }
 
-  actualizarEstadoAsistencia(pacienteId: number, fecha: string, hora: string, estado: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}`, {
-      pacienteId,
-      fecha,
-      hora,
-      estado
-    });
+  updateEstado(asistenciaId: number, estado: string) {
+    return this.http.patch(`${this.apiUrl}/${asistenciaId}/estado`, { estado });
   }
 
   // Generar asistencias para la semana desde una fecha inicio (string)

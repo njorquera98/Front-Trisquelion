@@ -1,6 +1,11 @@
 <!-- Modal principal: Confirmar asistencia -->
-<div *ngIf="visible" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-  <div class="relative bg-white dark:bg-neutral-800 rounded-xl shadow-xl p-6 w-[90%] max-w-md">
+<div
+  *ngIf="visible"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <div
+    class="relative bg-white dark:bg-neutral-800 rounded-xl shadow-xl p-6 w-[90%] max-w-md"
+  >
     <!-- Botón cerrar -->
     <button
       class="absolute top-3 right-3 text-neutral-400 hover:text-neutral-600 dark:hover:text-white transition"
@@ -11,40 +16,44 @@
     </button>
 
     <!-- Título -->
-    <h2 class="text-xl font-semibold text-center text-neutral-800 dark:text-white mb-4">
+    <h2
+      class="text-xl font-semibold text-center text-neutral-800 dark:text-white mb-4"
+    >
       Registrar asistencia
     </h2>
 
     <!-- Mensaje -->
-    <p class="text-sm text-center text-neutral-600 dark:text-neutral-300 mb-6">
+    <p
+      class="text-sm text-center text-neutral-600 dark:text-neutral-300 mb-6"
+    >
       ¿El paciente <strong>{{ nombrePaciente }}</strong> asistió a la sesión?
     </p>
 
     <!-- Botones -->
     <div class="grid grid-cols-2 sm:grid-cols-2 gap-3">
       <button
-        (click)="emitirRespuesta('si')"
+        (click)="emitirEstado('asistio')"
         class="w-full px-4 py-2 text-sm font-medium text-green-600 border border-green-600 rounded-lg hover:bg-green-600 hover:text-white transition"
       >
         Si Asiste
       </button>
 
       <button
-        (click)="emitirRespuesta('reprogramar')"
+        (click)="abrirReprogramacion()"
         class="w-full px-4 py-2 text-sm font-medium text-yellow-500 border border-yellow-500 rounded-lg hover:bg-yellow-500 hover:text-white transition"
       >
         Reprogramar
       </button>
 
       <button
-        (click)="emitirRespuesta('no')"
+        (click)="emitirEstado('no_asistio')"
         class="w-full px-4 py-2 text-sm font-medium text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition"
       >
         No Asiste
       </button>
 
       <button
-        (click)="emitirRespuesta('suspende')"
+        (click)="emitirEstado('suspendida')"
         class="w-full px-4 py-2 text-sm font-medium text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition"
       >
         Suspende
@@ -54,8 +63,13 @@
 </div>
 
 <!-- Modal de Reprogramación -->
-<div *ngIf="mostrarModalReprogramar" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-  <div class="relative bg-white dark:bg-neutral-800 rounded-xl shadow-xl p-6 w-[90%] max-w-md">
+<div
+  *ngIf="mostrarModalReprogramar"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <div
+    class="relative bg-white dark:bg-neutral-800 rounded-xl shadow-xl p-6 w-[90%] max-w-md"
+  >
     <!-- Botón cerrar -->
     <button
       class="absolute top-3 right-3 text-neutral-400 hover:text-neutral-600 dark:hover:text-white transition"
@@ -66,13 +80,20 @@
     </button>
 
     <!-- Título -->
-    <h2 class="text-xl font-semibold text-center text-neutral-800 dark:text-white mb-4">
+    <h2
+      class="text-xl font-semibold text-center text-neutral-800 dark:text-white mb-4"
+    >
       Reprogramar sesión
     </h2>
 
     <!-- Inputs -->
     <div class="mb-4">
-      <label for="fecha" class="block mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-200">Nueva fecha</label>
+      <label
+        for="fecha"
+        class="block mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-200"
+      >
+        Nueva fecha
+      </label>
       <input
         id="fecha"
         type="date"
@@ -82,7 +103,12 @@
     </div>
 
     <div class="mb-6">
-      <label for="hora" class="block mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-200">Nueva hora</label>
+      <label
+        for="hora"
+        class="block mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-200"
+      >
+        Nueva hora
+      </label>
       <input
         id="hora"
         type="time"

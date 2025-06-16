@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConfirmarAsistenciaComponent } from '../confirmar-asistencia/confirmar-asistencia.component';
@@ -28,23 +28,21 @@ export class AsistenciaComponent implements OnInit {
 
   diasPrimeraSemana: { nombre: string; fecha: Date }[] = [];
   diasSegundaSemana: { nombre: string; fecha: Date }[] = [];
+  @Input() horarioSeleccionado: any;
+  @Output() reprogramar = new EventEmitter<{ fecha: string, hora: string }>();
 
   constructor(private asistenciaService: AsistenciaService) { }
 
   ngOnInit() {
     this.generarDiasMostrar();
-    this.dividirDiasEnDosFilas(); // depende de días generados
+    this.dividirDiasEnDosFilas();
     this.cargarAsistenciasDosSemanas();
     this.diaHoy = this.obtenerDiaSemanaTexto(new Date());
-    console.log('Hoy es: ', this.diaHoy);
   }
 
   formatFechaIso(date: Date): string {
     return format(date, 'yyyy-MM-dd');
   }
-  // --------------------------------------------
-  // Fechas utilitarias
-  // --------------------------------------------
 
   getLunesDeEstaSemana(): Date {
     const hoy = new Date();
@@ -73,15 +71,6 @@ export class AsistenciaComponent implements OnInit {
     return dias[fecha.getDay()];
   }
 
-  parseDateSinZona(fechaString: string): Date {
-    const partes = fechaString.split('-').map(Number);
-    return new Date(partes[0], partes[1] - 1, partes[2]);
-  }
-
-  // --------------------------------------------
-  // Generar días a mostrar
-  // --------------------------------------------
-
   generarDiasMostrar() {
     const lunes = this.getLunesDeEstaSemana();
     this.diasMostrarFechas = [];
@@ -90,7 +79,7 @@ export class AsistenciaComponent implements OnInit {
       const fecha = new Date(lunes);
       fecha.setDate(lunes.getDate() + i);
 
-      if (fecha.getDay() !== 0) { // omitimos domingos
+      if (fecha.getDay() !== 0) {
         const nombre = this.obtenerDiaSemanaTexto(fecha);
         this.diasMostrarFechas.push({ nombre, fecha });
       }
@@ -103,28 +92,14 @@ export class AsistenciaComponent implements OnInit {
     this.diasSegundaSemana = this.diasMostrarFechas.slice(mitad);
   }
 
-  obtenerFechaDelDiaSemana(clave: string): string {
-    const index = parseInt(clave.split('_')[1], 10);
-    const diaObj = this.diasMostrarFechas[index];
-    return diaObj ? this.formatFecha(diaObj.fecha) : '';
-  }
-
-  // --------------------------------------------
-  // Asistencias
-  // --------------------------------------------
-
   cargarAsistenciasDosSemanas() {
     const inicio = this.getLunesDeEstaSemana();
     const fin = this.getSabadoDeSemanaSiguiente();
     const inicioStr = format(inicio, 'yyyy-MM-dd');
     const finStr = format(fin, 'yyyy-MM-dd');
 
-
-    console.log('Cargando asistencias desde', inicioStr, 'hasta', finStr);
-
     this.asistenciaService.getAsistenciasRango(inicioStr, finStr).subscribe({
       next: (asistencias) => {
-        console.log('Asistencias recibidas:', asistencias);
         this.organizarPorDia(asistencias);
       },
       error: (err) => {
@@ -146,34 +121,89 @@ export class AsistenciaComponent implements OnInit {
 
       this.horariosPorDia[fechaStr].push(asistencia);
     });
-
-    console.log('horariosPorDia organizados:', this.horariosPorDia);
   }
 
-  // --------------------------------------------
-  // Modal
-  // --------------------------------------------
+  registrarEstado(asistencia: Asistencia, nuevoEstado: string) {
+    this.asistenciaService.updateEstado(asistencia.asistencia_id, nuevoEstado).subscribe({
+      next: () => {
+        this.cargarAsistenciasDosSemanas();
+      },
+      error: (err) => {
+        console.error('Error al actualizar estado:', err);
+      },
+    });
+  }
 
-  abrirModal(horario: any, diaConIndice: string) {
+  abrirModal(horario: any, fecha: string): void {
     this.pacienteSeleccionado = horario.paciente;
+    this.horarioSeleccionado = horario;
     this.modalVisible = true;
   }
 
   cerrarModal() {
     this.modalVisible = false;
     this.pacienteSeleccionado = null;
+    this.horarioSeleccionado = null;
   }
 
-  procesarRespuesta(event: any) {
-    console.log('Respuesta modal:', event);
-    this.cargarAsistenciasDosSemanas();
-    this.cerrarModal();
+  // Maneja el evento emitido por el modal para actualizar estado (asistió, no asistió, etc)
+  procesarRespuesta(estado: string) {
+    if (!this.horarioSeleccionado) return;
+
+    this.registrarEstado(this.horarioSeleccionado, estado);
+
+    // Cierra el modal y limpia selección
+    this.modalVisible = false;
+    this.pacienteSeleccionado = null;
+    this.horarioSeleccionado = null;
   }
 
-  procesarReprogramacion(event: any) {
-    console.log('Reprogramar:', event);
-    this.cargarAsistenciasDosSemanas();
-    this.cerrarModal();
+  // Maneja la reprogramación enviada por el modal con fecha y hora nuevas
+  procesarReprogramacion(datos: { fecha: string; hora: string }) {
+    if (!this.horarioSeleccionado) return;
+
+    console.log('Horario seleccionado completo:', this.horarioSeleccionado);
+
+    const asistenciaId = this.horarioSeleccionado.asistencia_id;
+    const pacienteId = this.horarioSeleccionado.paciente?.paciente_id;
+
+    console.log('Asistencia original ID:', asistenciaId);
+    console.log('Paciente ID:', pacienteId);
+
+    if (!pacienteId) {
+      console.error('No se encontró el ID del paciente para crear nueva asistencia.');
+      return;
+    }
+
+    this.asistenciaService.updateEstado(asistenciaId, 'reprogramada').subscribe({
+      next: () => {
+        const nuevaAsistenciaDto = {
+          paciente_fk: pacienteId,
+          fecha: datos.fecha,
+          hora_programada: datos.hora,
+          estado: 'pendiente'
+        };
+
+        console.log('Creando nueva asistencia con DTO:', nuevaAsistenciaDto);
+
+        this.asistenciaService.create(nuevaAsistenciaDto).subscribe({
+          next: () => {
+            console.log('Nueva asistencia creada correctamente');
+            this.modalVisible = false;
+            this.pacienteSeleccionado = null;
+            this.horarioSeleccionado = null;
+
+            // Aquí actualizas la lista de asistencias para reflejar cambios
+            this.cargarAsistenciasDosSemanas();
+          },
+          error: (err) => {
+            console.error('Error al crear nueva asistencia:', err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error al actualizar estado de asistencia:', err);
+      }
+    });
   }
 }
-

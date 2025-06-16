@@ -65,12 +65,17 @@
             <span
               class="text-xs font-semibold px-2 py-1 rounded bg-transparent border-2"
               [ngClass]="{
-                'border-green-400 text-green-400': horario.estado === 'Si Asiste',
-                'border-red-400 text-red-400': horario.estado === 'No Asiste' || horario.estado === 'Suspendido',
-                'border-yellow-500 text-yellow-500': horario.estado === 'Reprogramado'
+              'border-green-400 text-green-400': horario.estado === 'asistio',
+              'border-red-400 text-red-400': horario.estado === 'no_asistio' || horario.estado === 'suspendida',
+              'border-yellow-500 text-yellow-500': horario.estado === 'reprogramada'
               }"
             >
-              {{ horario.estado }}
+            {{
+              horario.estado === 'asistio' ? 'Asiste' :
+              horario.estado === 'no_asistio' ? 'No asiste' :
+              horario.estado === 'reprogramada' ? 'Reprograma' :
+              horario.estado === 'suspendida' ? 'Suspende' : ''
+            }}
             </span>
           </ng-template>
         </li>
@@ -89,8 +94,9 @@
 <app-confirmar-asistencia
   [visible]="modalVisible"
   [nombrePaciente]="pacienteSeleccionado?.nombre + ' ' + pacienteSeleccionado?.apellido"
+  [horarioSeleccionado]="horarioSeleccionado"
   (cerrar)="cerrarModal()"
-  (respuesta)="procesarRespuesta($event)"
+  (actualizarEstado)="procesarRespuesta($event)"
   (reprogramar)="procesarReprogramacion($event)"
 ></app-confirmar-asistencia>
 

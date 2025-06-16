@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-confirmar-asistencia',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './confirmar-asistencia.component.html',
   styleUrl: './confirmar-asistencia.component.css'
@@ -11,40 +12,40 @@ import { FormsModule } from '@angular/forms';
 export class ConfirmarAsistenciaComponent {
   @Input() visible = false;
   @Input() nombrePaciente = '';
+  @Input() horarioSeleccionado: any;
+
   @Output() cerrar = new EventEmitter<void>();
-  @Output() respuesta = new EventEmitter<'si' | 'no' | 'suspende'>();
   @Output() reprogramar = new EventEmitter<{ fecha: string; hora: string }>();
+  @Output() actualizarEstado = new EventEmitter<string>();
 
   mostrarModalReprogramar = false;
   fechaReprogramada = '';
   horaReprogramada = '';
 
-  emitirRespuesta(valor: 'si' | 'no' | 'suspende' | 'reprogramar') {
-    if (valor === 'reprogramar') {
-      this.mostrarModalReprogramar = true;
-      return;
-    }
-    this.respuesta.emit(valor);
+  abrirReprogramacion() {
+    this.mostrarModalReprogramar = true;
+  }
+
+  emitirEstado(estado: string) {
+    this.actualizarEstado.emit(estado);
     this.cerrar.emit();
   }
 
   confirmarReprogramacion() {
     if (this.fechaReprogramada && this.horaReprogramada) {
-      this.reprogramar.emit({
-        fecha: this.fechaReprogramada,
-        hora: this.horaReprogramada,
-      });
+      // Emito la reprogramación con fecha y hora al componente padre
+      this.reprogramar.emit({ fecha: this.fechaReprogramada, hora: this.horaReprogramada });
       this.mostrarModalReprogramar = false;
       this.cerrar.emit();
     }
   }
 
-  cerrarModal() {
-    this.cerrar.emit();
-  }
-
   cancelarReprogramacion() {
     this.mostrarModalReprogramar = false;
+  }
+
+  cerrarModal() {
+    this.cerrar.emit();
   }
 }
 
