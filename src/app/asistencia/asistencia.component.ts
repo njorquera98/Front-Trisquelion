@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConfirmarAsistenciaComponent } from '../confirmar-asistencia/confirmar-asistencia.component';
 import { AsistenciaService } from '../services/asistencia.service';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Asistencia } from '../models/asistencia.model';
 
@@ -112,7 +112,7 @@ export class AsistenciaComponent implements OnInit {
     this.horariosPorDia = {};
 
     asistencias.forEach((asistencia) => {
-      const fecha = new Date(asistencia.fecha);
+      const fecha = parseISO(asistencia.fecha);
       const fechaStr = format(fecha, 'yyyy-MM-dd');
 
       if (!this.horariosPorDia[fechaStr]) {
