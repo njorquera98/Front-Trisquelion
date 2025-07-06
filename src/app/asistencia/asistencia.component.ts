@@ -57,7 +57,7 @@ export class AsistenciaComponent implements OnInit {
   getSabadoDeSemanaSiguiente(): Date {
     const lunes = this.getLunesDeEstaSemana();
     const sabadoSiguiente = new Date(lunes);
-    sabadoSiguiente.setDate(lunes.getDate() + 11);
+    sabadoSiguiente.setDate(lunes.getDate() + 12);
     sabadoSiguiente.setHours(23, 59, 59, 999);
     return sabadoSiguiente;
   }
