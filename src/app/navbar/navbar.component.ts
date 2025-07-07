@@ -23,4 +23,8 @@ export class NavbarComponent {
   redirigirAsistencia(): void {
     this.router.navigate([`/asistencia`]);
   }
+
+  redirigirBonos(): void {
+    this.router.navigate([`/bonos`])
+  }
 }

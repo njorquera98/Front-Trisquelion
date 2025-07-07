@@ -33,26 +33,32 @@
       </div>
     </div>
   </div>
-
   <!-- Contenedor scrollable para bonos -->
-  <div class="overflow-y-auto h-[calc(100vh-8rem)]">
+<div class="overflow-y-auto h-[calc(100vh-8rem)]">
+  <ng-container *ngIf="bonos && bonos.length > 0; else noBonos">
     <div class="space-y-4">
       <!-- Iterar sobre cada bono -->
-      <ng-container *ngIf="bonos && bonos.length > 0; else noBonos">
-        <div *ngFor="let bono of bonos"
-          class="p-4 bg-neutral-50 dark:bg-neutral-700 rounded-lg shadow-md mb-4 border border-neutral-300 dark:border-neutral-600">
-          <div class="flex flex-wrap gap-4">
-
-            <!-- N° de Bono -->
+      <div *ngFor="let bono of bonos"
+        class="p-4 bg-neutral-50 dark:bg-neutral-700 rounded-lg shadow-md mb-4 border border-neutral-300 dark:border-neutral-600">
+        <div class="flex justify-between items-start">
+          <!-- Información del bono -->
+          <div class="flex flex-wrap gap-4 flex-1">
+            <!-- Folio -->
             <div class="flex-1 sm:w-1/5 min-w-[120px]">
               <p class="font-semibold text-neutral-700 dark:text-neutral-300">N° de Folio</p>
               <p class="text-neutral-900 dark:text-white">{{ bono.folio }}</p>
             </div>
 
+            <!-- Fecha -->
+            <div class="flex-1 sm:w-1/5 min-w-[120px]">
+              <p class="font-semibold text-neutral-700 dark:text-neutral-300">Fecha</p>
+              <p class="text-neutral-900 dark:text-white">{{ bono.fecha | date }}</p>
+            </div>
+
             <!-- Valor -->
             <div class="flex-1 sm:w-1/5 min-w-[120px]">
               <p class="font-semibold text-neutral-700 dark:text-neutral-300">Valor</p>
-              <p class="text-neutral-900 dark:text-white">{{ bono.valor }}</p>
+              <p class="text-neutral-900 dark:text-white">{{ formatearValor(bono.valor) }}</p>
             </div>
 
             <!-- Cantidad -->
@@ -66,26 +72,27 @@
               <p class="font-semibold text-neutral-700 dark:text-neutral-300">Sesiones Disponibles</p>
               <p class="text-neutral-900 dark:text-white">{{ bono.sesionesDisponibles }}</p>
             </div>
-
-            <button type="button"
-              class="text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500"
-              (click)="abrirModal(bono)">
-              <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-              </svg>
-              <span class="sr-only">Editar bono</span>
-            </button>
           </div>
-        </div>
-      </ng-container>
 
-      <ng-template #noBonos>
-        <div class="p-4 bg-neutral-50 dark:bg-neutral-700 rounded-lg">
-          <p class="text-neutral-900 dark:text-white">No hay bonos disponibles para este paciente.</p>
+          <!-- Botón de edición -->
+          <button type="button"
+            class="text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500"
+            (click)="abrirModal(bono)">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+            </svg>
+            <span class="sr-only">Editar bono</span>
+          </button>
         </div>
-      </ng-template>
+      </div>
     </div>
-  </div>
+  </ng-container>
+
+  <ng-template #noBonos>
+    <div class="p-4 bg-neutral-50 dark:bg-neutral-700 rounded-lg">
+      <p class="text-neutral-900 dark:text-white">No hay bonos disponibles para este paciente.</p>
+    </div>
+  </ng-template>
 </div>
+

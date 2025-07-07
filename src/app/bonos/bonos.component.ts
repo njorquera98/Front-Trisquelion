@@ -67,5 +67,14 @@ export class BonosComponent implements OnInit {
     this.cerrarModal();
     this.cargarBonos(this.pacienteId); // Recargar los bonos al crear uno nuevo
   }
+
+  formatearValor(valor: number): string {
+    return valor.toLocaleString('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      minimumFractionDigits: 0
+    });
+  }
+
 }
 

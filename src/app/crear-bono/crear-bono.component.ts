@@ -15,6 +15,7 @@ export class CrearBonoComponent implements OnInit {
   pacienteId: number = 0;
   cantidad: number = 0;
   valor: number = 0;
+  fecha: string = '';
   folio: string = '';
   sesionesDisponibles: number = 0;
 
@@ -37,6 +38,7 @@ export class CrearBonoComponent implements OnInit {
       this.cantidad = this.bono.cantidad;
       this.valor = this.bono.valor;
       this.folio = this.bono.folio;
+      this.fecha = this.bono.fecha;
       this.sesionesDisponibles = this.bono.sesionesDisponibles;
     } else {
       // Si no hay bono, inicializa sesionesDisponibles con un valor predeterminado
@@ -54,6 +56,7 @@ export class CrearBonoComponent implements OnInit {
         cantidad: this.cantidad,
         valor: this.valor,
         folio: this.folio,
+        fecha: this.fecha,
         // Para editar, se toma el valor introducido o se mantiene el valor actual si no se edita
         sesionesDisponibles: this.sesionesDisponibles !== undefined ? this.sesionesDisponibles : this.bono.sesionesDisponibles,
       };
@@ -77,6 +80,7 @@ export class CrearBonoComponent implements OnInit {
       const nuevoBono: Bono = {
         bono_id: 0,
         paciente_fk: this.pacienteId,
+        fecha: this.fecha,
         cantidad: this.cantidad,
         valor: this.valor,
         folio: this.folio,
@@ -93,6 +97,27 @@ export class CrearBonoComponent implements OnInit {
           console.error('Error al crear bono:', error);
         }
       );
+    }
+  }
+
+  formatearValor(valor: number): string {
+    return '$' + valor.toLocaleString('es-CL'); // siempre antepone el $
+  }
+
+  parsearValor(valorFormateado: string): void {
+    // Elimina cualquier símbolo no numérico
+    const limpio = valorFormateado.replace(/[^0-9]/g, '');
+    this.valor = parseInt(limpio, 10) || 0;
+  }
+
+  soloNumeros(event: KeyboardEvent): void {
+    const permitidos = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab'];
+
+    if (
+      !/^[0-9]$/.test(event.key) &&
+      !permitidos.includes(event.key)
+    ) {
+      event.preventDefault();
     }
   }
 }

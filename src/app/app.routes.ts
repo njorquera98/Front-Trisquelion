@@ -4,6 +4,7 @@ import { AuthGuard } from './services/auth.guard';
 import { PacienteComponent } from './paciente/paciente.component';
 import { ListaComponent } from './lista/lista.component';
 import { AsistenciaComponent } from './asistencia/asistencia.component';
+import { ListaBonoComponent } from './lista-bono/lista-bono.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'lista', pathMatch: 'full' },
@@ -11,4 +12,5 @@ export const routes: Routes = [
   { path: 'lista', component: ListaComponent, canActivate: [AuthGuard] },
   { path: 'paciente/:id', component: PacienteComponent, canActivate: [AuthGuard] },
   { path: 'asistencia', component: AsistenciaComponent, canActivate: [AuthGuard] },
+  { path: 'bonos', component: ListaBonoComponent, canActivate: [AuthGuard] },
 ];

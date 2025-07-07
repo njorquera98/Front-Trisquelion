@@ -1,0 +1,59 @@
+<div class="p-6">
+  <!-- Título principal -->
+  <h2 class="text-2xl font-bold text-center text-neutral-900 dark:text-white mb-2">
+    Bonos de {{ obtenerNombreMes(mesActual) }} {{ anioActual }}
+  </h2>
+
+  <!-- Resumen de totales -->
+  <div class="flex flex-col sm:flex-row justify-center items-center gap-2 mb-6">
+    <div class="text-neutral-900 dark:text-white text-lg font-semibold">
+      Total {{ formatearValor(totalBonos) }}
+    </div>
+    <div class="text-neutral-600 dark:text-neutral-400 text-sm">
+      — {{ cantidadBonos }} bono{{ cantidadBonos === 1 ? '' : 's' }} emitido{{ cantidadBonos === 1 ? '' : 's' }}
+    </div>
+  </div>
+
+  <!-- Línea divisora -->
+  <hr class="border-t border-neutral-300 dark:border-neutral-600 mb-4">
+
+  <!-- Listado de bonos -->
+  <div *ngIf="bonos.length > 0; else sinBonos" class="space-y-4">
+    <div *ngFor="let bono of bonos"
+      class="p-5 bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700 transition hover:shadow-md">
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- Folio -->
+        <div>
+          <p class="text-sm font-semibold text-neutral-600 dark:text-neutral-400">Folio</p>
+          <p class="text-neutral-900 dark:text-white">{{ bono.folio }}</p>
+        </div>
+
+        <!-- Fecha -->
+        <div>
+          <p class="text-sm font-semibold text-neutral-600 dark:text-neutral-400">Fecha</p>
+          <p class="text-neutral-900 dark:text-white">{{ bono.fecha }}</p>
+        </div>
+
+        <!-- Valor -->
+        <div>
+          <p class="text-sm font-semibold text-neutral-600 dark:text-neutral-400">Valor</p>
+          <p class="text-neutral-900 dark:text-white">{{ formatearValor(bono.valor) }}</p>
+        </div>
+
+        <!-- Paciente -->
+        <div>
+          <p class="text-sm font-semibold text-neutral-600 dark:text-neutral-400">Paciente</p>
+          <p class="text-neutral-900 dark:text-white">{{ bono.paciente?.nombre }} {{ bono.paciente?.apellido }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No hay bonos -->
+  <ng-template #sinBonos>
+    <div class="text-center text-neutral-500 dark:text-neutral-400 mt-4">
+      No se encontraron bonos en este mes.
+    </div>
+  </ng-template>
+</div>

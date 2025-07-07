@@ -28,5 +28,19 @@ export class BonoService {
   updateBono(bonoId: number, bono: Bono): Observable<Bono> {
     return this.http.patch<Bono>(`${this.apiUrl}/${bonoId}`, bono);
   }
+
+  getBonosPorMes(mes?: number, anio?: number): Observable<Bono[]> {
+    let url = `${this.apiUrl}/por-mes`;
+    const params = new URLSearchParams();
+
+    if (mes) params.append('mes', mes.toString());
+    if (anio) params.append('anio', anio.toString());
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    return this.http.get<Bono[]>(url);
+  }
 }
 
