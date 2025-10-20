@@ -1,80 +1,81 @@
-<form (ngSubmit)="onSubmit()">
-  <div class="grid gap-4 mb-4 sm:grid-cols-2">
-    <!-- Selección de tipo de sesión -->
-    <div>
-      <label for="tipo_sesion" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">
-        Tipo de Sesión
-      </label>
-      <select id="tipo_sesion" name="tipo_sesion" [(ngModel)]="tipo_sesion"
-        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
-        required>
-        <option value="" disabled selected>Seleccione un tipo</option>
-        <option value="Terapia">Terapia</option>
-        <option value="Re-ingreso">Re-ingreso</option>
-        <option value="Ingreso">Ingreso</option>
-        <option value="Alta">Alta</option>
-      </select>
+<div class="rounded-lg p-6 max-h-[90vh] overflow-y-auto">
+  <form (ngSubmit)="onSubmit()">
+    <div class="grid gap-4 mb-4 sm:grid-cols-2">
+      <!-- Selección de tipo de sesión -->
+      <div>
+        <label for="tipo_sesion" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">
+          Tipo de Sesión
+        </label>
+        <select id="tipo_sesion" name="tipo_sesion" [(ngModel)]="tipo_sesion"
+          class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
+          required>
+          <option value="" disabled selected>Seleccione un tipo</option>
+          <option value="Terapia">Terapia</option>
+          <option value="Re-ingreso">Re-ingreso</option>
+          <option value="Ingreso">Ingreso</option>
+          <option value="Alta">Alta</option>
+        </select>
+      </div>
+
+      <!-- Selección de evaluación -->
+      <div>
+        <label for="evaluacion_fk" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">
+          Diagnostico
+        </label>
+        <select id="evaluacion_fk" name="evaluacion_fk" [(ngModel)]="selectedEvaluacionId"
+          (change)="onEvaluacionChange()" class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500
+    focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400
+    dark:text-white" required>
+          <option value="" disabled selected>Seleccione un diagnostico</option>
+          <option *ngFor="let evaluacion of evaluaciones" [value]="evaluacion.evaluacion_id">
+            {{ evaluacion.diagnostico }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Fecha -->
+      <div>
+        <label for="fecha" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Fecha</label>
+        <input type="date" id="fecha" name="fecha" [(ngModel)]="fecha"
+          class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
+          required>
+      </div>
+
+      <!-- Hora -->
+      <div>
+        <label for="hora" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Hora</label>
+        <input type="time" id="hora" name="hora" [(ngModel)]="hora"
+          class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
+          required>
+      </div>
+
+      <!-- Descripción -->
+      <div class="sm:col-span-2">
+        <label for="descripcion"
+          class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Descripción</label>
+        <textarea id="descripcion" name="descripcion" rows="4" [(ngModel)]="descripcion"
+          class="block p-2.5 w-full text-sm text-neutral-900 bg-neutral-50 rounded-lg border border-neutral-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
+          placeholder="Escriba la descripción aquí" required></textarea>
+      </div>
     </div>
 
-    <!-- Selección de evaluación -->
-    <div>
-      <label for="evaluacion_fk" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">
-        Diagnostico
-      </label>
-      <select id="evaluacion_fk" name="evaluacion_fk" [(ngModel)]="selectedEvaluacionId" (change)="onEvaluacionChange()"
-        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500
-  focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400
-  dark:text-white" required>
-        <option value="" disabled selected>Seleccione un diagnostico</option>
-        <option *ngFor="let evaluacion of evaluaciones" [value]="evaluacion.evaluacion_id">
-          {{ evaluacion.diagnostico }}
-        </option>
-      </select>
+    <!-- Alerta de error -->
+    <div *ngIf="showErrorAlert"
+      class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-neutral-800 dark:text-red-400"
+      role="alert">
+      <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <path
+          d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+      </svg>
+      <span class="sr-only">Error</span>
+      <div class="ml-3 text-sm font-medium">
+        {{ errorMessage }}
+      </div>
     </div>
 
-
-    <!-- Fecha -->
-    <div>
-      <label for="fecha" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Fecha</label>
-      <input type="date" id="fecha" name="fecha" [(ngModel)]="fecha"
-        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
-        required>
-    </div>
-
-    <!-- Hora -->
-    <div>
-      <label for="hora" class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Hora</label>
-      <input type="time" id="hora" name="hora" [(ngModel)]="hora"
-        class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
-        required>
-    </div>
-
-    <!-- Descripción -->
-    <div class="sm:col-span-2">
-      <label for="descripcion"
-        class="block mb-2 text-sm font-medium text-neutral-900 dark:text-white">Descripción</label>
-      <textarea id="descripcion" name="descripcion" rows="4" [(ngModel)]="descripcion"
-        class="block p-2.5 w-full text-sm text-neutral-900 bg-neutral-50 rounded-lg border border-neutral-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white"
-        placeholder="Escriba la descripción aquí" required></textarea>
-    </div>
-  </div>
-
-  <!-- Alerta de error -->
-  <div *ngIf="showErrorAlert"
-    class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-neutral-800 dark:text-red-400"
-    role="alert">
-    <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-      <path
-        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-    </svg>
-    <span class="sr-only">Error</span>
-    <div class="ml-3 text-sm font-medium">
-      {{ errorMessage }}
-    </div>
-  </div>
-
-  <button type="submit"
-    class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-    Guardar Sesión
-  </button>
-</form>
+    <button type="submit"
+      class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+      Guardar Sesión
+    </button>
+  </form>
+</div>
